@@ -1,0 +1,3073 @@
+{
+	"default": {
+		"edges": 0.5,
+		"motion": 1,
+		"bright": 0,
+		"dark": 0,
+		"threshold": 0.55,
+		"spacing": 7,
+		"points": 130,
+		"detail": 240,
+		"detect": true,
+		"objectKinds": "things that move",
+		"confidence": 0.5,
+		"objects": 12,
+		"perObject": 2,
+		"detectEvery": 100,
+		"regionTemplate": "{class} {id}",
+		"regionSpot": "above",
+		"ownNumbers": false,
+		"focus": 0.88,
+		"stabilize": true,
+		"sensitivity": 0.5,
+		"memory": 0.6,
+		"subjects": 6,
+		"subjectMin": 0.12,
+		"showSubject": false,
+		"reach": 6,
+		"linger": 7,
+		"smooth": 0.3,
+		"idBase": 37000,
+		"boxes": 0.32,
+		"sizeMin": 8,
+		"sizeMax": 110,
+		"boxStyle": "full",
+		"lineWidth": 1.5,
+		"color": "#ffffff",
+		"opacity": 0.85,
+		"regions": 4,
+		"regionSize": 34,
+		"regionMin": 7,
+		"regionStyle": "same",
+		"colorBy": "one colour",
+		"labels": 1,
+		"template": "{id}",
+		"words": "SUBJECT,VEHICLE,ANOMALY,UNREGISTERED,NONCOMPLIANT,ASSET,TARGET",
+		"font": "condensed",
+		"labelSize": 23,
+		"labelColor": "#ffffff",
+		"labelBacking": false,
+		"labelBack": "#000000",
+		"labelSpot": "auto",
+		"linkMode": "hub",
+		"hubs": 3,
+		"linkCount": 6,
+		"linkMax": 95,
+		"linkWidth": 1.2,
+		"linkColor": "#ffffff",
+		"linkOpacity": 0.75,
+		"trail": 0,
+		"trailOf": "objects",
+		"trailWidth": 2,
+		"patches": 0.05,
+		"patchMode": "mixed",
+		"patchColor": "#79dbe8",
+		"brightness": 0,
+		"contrast": 1,
+		"saturation": 1,
+		"hue": 0,
+		"sharpen": 0,
+		"solarize": 0,
+		"solarAt": 0.7,
+		"posterize": 0,
+		"invert": 0,
+		"palette": "off",
+		"paletteMix": 1,
+		"shadow": "#04060f",
+		"highlight": "#d8f7ff",
+		"split": 0,
+		"scanlines": 0,
+		"grain": 0,
+		"vignette": 0,
+		"pixelate": 1,
+		"glitch": 0,
+		"hud": "",
+		"hudSpot": "top-left",
+		"hudSize": 26,
+		"hudColor": "#ffffff",
+		"speed": 1,
+		"outMax": 1920,
+		"bitrate": 16,
+		"matte": "outline",
+		"world": "same",
+		"worldAmount": 1,
+		"within": "same",
+		"matteColor": "#1d2021",
+		"feather": 0.3,
+		"grow": 0.05,
+		"contour": 0,
+		"contourWidth": 2,
+		"contourColor": "#ebdbb2",
+		"follow": false,
+		"followZoom": 0,
+		"followSmooth": 0.8,
+		"echo": 0,
+		"echoEvery": 0.2,
+		"echoFade": 0.8,
+		"echoMode": "copies",
+		"insets": 0,
+		"insetSide": "right",
+		"insetZoom": 1,
+		"insetSize": 0.22,
+		"insetTemplate": "{id} {class} {pct}",
+		"insetColor": "#ebdbb2",
+		"glyphs": "off",
+		"glyphSize": 14,
+		"glyphRamp": " .:-=+*#%@",
+		"glyphColor": "#ebdbb2",
+		"glyphBack": "#1d2021",
+		"glyphTint": false,
+		"depth": "off",
+		"depthAmount": 0.7,
+		"depthColor": "#fabd2f",
+		"depthLines": 16,
+		"depthSpeed": 4,
+		"ahead": true,
+		"aheadSmooth": 0.04,
+		"sortLevel": 0.3,
+		"sortDir": "down",
+		"dotSize": 8,
+		"worldWord": "",
+		"scene": false,
+		"worldInk": 0.6,
+		"rings": 0,
+		"ringSpacing": 30,
+		"ringSpeed": 45,
+		"ringColor": "#8ec07c",
+		"reveal": "off",
+		"revealAt": 0.5,
+		"revealTime": 0.5,
+		"revealJitter": 0,
+		"beat": false,
+		"beatEvery": 1,
+		"foresight": 0,
+		"foresightColor": "#fe8019",
+		"smoothSlow": true,
+		"mix": "",
+		"mixHow": "things",
+		"mixAt": 1.0,
+		"mixTime": 0.5,
+		"mixJitter": 0.3,
+		"bend": 0.3,
+		"crush": 0.85,
+		"mosh": "off",
+		"moshWhere": "world",
+		"moshHold": 2,
+		"tear": 0,
+		"trichrome": 0,
+		"stutter": 0,
+		"stutterLen": 4,
+		"kaleido": 0,
+		"kaleidoSpin": 1.5,
+		"mixSet": {}
+	},
+	"presets": {
+		"smoke": {},
+		"cctv": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 40,
+			"confidence": 0.6,
+			"detectEvery": 66,
+			"regions": 0,
+			"points": 40,
+			"color": "#3dff8b",
+			"colorBy": "by kind",
+			"lineWidth": 2,
+			"opacity": 1,
+			"font": "mono",
+			"labelSize": 20,
+			"labelBacking": true,
+			"labelColor": "#000000",
+			"regionTemplate": "{id} {class} {pct}",
+			"hud": "CAM 01  {file}\n{date}\n{regions} TRACKED",
+			"hudSize": 22
+		},
+		"panopticon": {
+			"boxStyle": "corners",
+			"color": "#d7ffe9",
+			"labelColor": "#d7ffe9",
+			"linkColor": "#d7ffe9",
+			"linkMode": "nearest",
+			"linkCount": 2,
+			"linkMax": 22,
+			"linkOpacity": 0.4,
+			"points": 80,
+			"boxes": 0.6,
+			"sizeMin": 18,
+			"sizeMax": 150,
+			"labels": 0.55,
+			"font": "tech",
+			"labelSize": 19,
+			"template": "{tag} {id}\n{conf}",
+			"regionTemplate": "{CLASS} {id}\n{conf}",
+			"patches": 0.02,
+			"patchMode": "invert",
+			"hud": "{rec} REC  {date}\nCAM {file}\nTRACKING {n} / REGIONS {regions}",
+			"hudColor": "#d7ffe9",
+			"regions": 4
+		},
+		"ember": {
+			"spacing": 11,
+			"points": 60,
+			"boxStyle": "corners",
+			"color": "#ffb347",
+			"labelColor": "#ffb347",
+			"boxes": 0.6,
+			"sizeMin": 24,
+			"sizeMax": 190,
+			"linkMode": "off",
+			"font": "tech",
+			"template": "{id}  {conf}°",
+			"regionTemplate": "{CLASS} {conf}",
+			"labelSize": 21,
+			"labels": 0.8,
+			"patches": 0,
+			"hud": "SIG {n}",
+			"hudColor": "#ffb347",
+			"regions": 5,
+			"regionSize": 42
+		},
+		"night watch": {
+			"boxStyle": "cross",
+			"color": "#b8ffb0",
+			"labelColor": "#b8ffb0",
+			"linkColor": "#b8ffb0",
+			"linkMode": "chain",
+			"linkMax": 18,
+			"linkOpacity": 0.5,
+			"font": "terminal",
+			"labelSize": 30,
+			"template": "{tag}",
+			"regionTemplate": "{CLASS}",
+			"labels": 0.25,
+			"points": 90,
+			"boxes": 0.5,
+			"sizeMin": 14,
+			"sizeMax": 44,
+			"patches": 0,
+			"hud": "{clock}  {rec}\nGAIN +38dB",
+			"hudColor": "#b8ffb0",
+			"hudSize": 36,
+			"regions": 2
+		},
+		"blacksite": {
+			"boxStyle": "full",
+			"color": "#ff2638",
+			"lineWidth": 2.2,
+			"labelColor": "#000000",
+			"labelBacking": true,
+			"labelBack": "#ff2638",
+			"linkColor": "#ff2638",
+			"linkOpacity": 0.9,
+			"font": "tech",
+			"labelSize": 18,
+			"labels": 0.4,
+			"template": "{tag} {id}",
+			"regionTemplate": "{CLASS} {id}",
+			"patches": 0.08,
+			"patchMode": "fill",
+			"patchColor": "#000000",
+			"hud": "CLASSIFIED // {n} FLAGGED\n{date}",
+			"hudColor": "#ff2638",
+			"hudSpot": "bottom-left"
+		},
+		"sprawl": {
+			"color": "#27f7ff",
+			"labelColor": "#ff3ec8",
+			"linkColor": "#ff3ec8",
+			"linkMode": "nearest",
+			"linkCount": 3,
+			"linkMax": 28,
+			"boxStyle": "corners",
+			"font": "tech",
+			"template": "x{id} // {v}",
+			"regionTemplate": "{class} // {id}",
+			"labelSize": 20,
+			"labels": 0.6,
+			"patches": 0.1,
+			"patchColor": "#ff3ec8",
+			"hud": "SPRAWL GRID {rec}\nFEED {file}",
+			"hudColor": "#27f7ff"
+		},
+		"census": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 60,
+			"confidence": 0.55,
+			"boxStyle": "corners",
+			"colorBy": "by kind",
+			"font": "tech",
+			"labelSize": 20,
+			"regionTemplate": "{class}",
+			"hud": "{counts}",
+			"hudSpot": "top-right",
+			"hudSize": 42
+		},
+		"manifest": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 16,
+			"boxStyle": "brackets",
+			"color": "#f4f1e4",
+			"font": "mono",
+			"labelSize": 26,
+			"labelColor": "#f4f1e4",
+			"regionTemplate": "{id}",
+			"regionSpot": "center",
+			"hud": "{list}",
+			"hudSize": 22,
+			"hudColor": "#f4f1e4"
+		},
+		"lock-on": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 1,
+			"regions": 1,
+			"regionStyle": "sights",
+			"color": "#ff3b30",
+			"font": "tech",
+			"labelSize": 22,
+			"labelColor": "#ff3b30",
+			"regionTemplate": "{CLASS} {pct}\n{x} {y}",
+			"hud": "LOCK {rec}\n{clock}",
+			"hudColor": "#ff3b30",
+			"hudSpot": "bottom-left"
+		},
+		"wake": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 30,
+			"trail": 150,
+			"trailWidth": 3,
+			"regionStyle": "corners",
+			"colorBy": "each its own",
+			"font": "tech",
+			"labelSize": 20,
+			"regionTemplate": "{id}"
+		},
+		"flow": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"regions": 0,
+			"regionStyle": "none",
+			"regionTemplate": "",
+			"trail": 36,
+			"trailOf": "points",
+			"trailWidth": 1.5,
+			"colorBy": "each its own",
+			"opacity": 0.9,
+			"points": 240,
+			"spacing": 5,
+			"reach": 8,
+			"linger": 3
+		},
+		"broadcast": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 24,
+			"trail": 40,
+			"regionStyle": "foot",
+			"colorBy": "each its own",
+			"lineWidth": 3,
+			"opacity": 1,
+			"font": "condensed",
+			"labelSize": 26,
+			"labelBacking": true,
+			"labelColor": "#000000",
+			"regionTemplate": "{id}"
+		},
+		"network": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "objects",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 30,
+			"linkCount": 3,
+			"linkMax": 200,
+			"linkWidth": 1,
+			"linkOpacity": 0.7,
+			"linkColor": "#9be8ff",
+			"regionStyle": "none",
+			"color": "#9be8ff",
+			"font": "tech",
+			"labelSize": 22,
+			"labelBacking": true,
+			"labelBack": "#9be8ff",
+			"labelColor": "#06121a",
+			"regionTemplate": "{class}",
+			"regionSpot": "center"
+		},
+		"radar": {
+			"boxes": 0.3,
+			"boxStyle": "ring",
+			"sizeMin": 20,
+			"sizeMax": 130,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"color": "#7dffb2",
+			"opacity": 0.55,
+			"lineWidth": 1,
+			"font": "terminal",
+			"labelSize": 30,
+			"labelColor": "#7dffb2",
+			"regionTemplate": "{id}",
+			"regionSpot": "center",
+			"hud": "SWEEP {n}\nCONTACTS {regions}",
+			"hudSize": 30,
+			"hudColor": "#7dffb2"
+		},
+		"survey": {
+			"boxes": 0.5,
+			"boxStyle": "cross",
+			"sizeMin": 10,
+			"sizeMax": 16,
+			"perObject": 6,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"regionStyle": "dashed",
+			"color": "#8fd3ff",
+			"lineWidth": 1.5,
+			"font": "mono",
+			"labelSize": 22,
+			"labelColor": "#8fd3ff",
+			"regionTemplate": "{w} × {h}",
+			"regionSpot": "below"
+		},
+		"telemetry": {
+			"boxes": 0,
+			"labels": 0.7,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"detect": false,
+			"regions": 0,
+			"template": "{x} {y}\n{v}",
+			"font": "mono",
+			"labelSize": 14,
+			"labelSpot": "center",
+			"points": 110,
+			"spacing": 10,
+			"hud": "{n} POINTS  {fps} FPS\n{clock}",
+			"hudSize": 20,
+			"hudSpot": "bottom-right"
+		},
+		"stars": {
+			"detect": false,
+			"regions": 0,
+			"boxes": 1,
+			"boxStyle": "dot",
+			"sizeMin": 10,
+			"sizeMax": 26,
+			"opacity": 1,
+			"labels": 0,
+			"patches": 0,
+			"points": 220,
+			"spacing": 6,
+			"linkMode": "nearest",
+			"linkCount": 2,
+			"linkMax": 12,
+			"linkWidth": 0.8,
+			"linkOpacity": 0.5
+		},
+		"captions": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"ownNumbers": true,
+			"objects": 20,
+			"regionStyle": "none",
+			"font": "condensed",
+			"labelSize": 44,
+			"labelBacking": true,
+			"regionTemplate": "{class}",
+			"regionSpot": "center"
+		},
+		"isolate": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 12,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class}",
+			"regionSpot": "above",
+			"font": "mono",
+			"labelSize": 18,
+			"labelColor": "#ebdbb2",
+			"world": "mono",
+			"worldAmount": 0.9,
+			"within": "untouched",
+			"contour": 0.85,
+			"contourWidth": 1.5,
+			"contourColor": "#ebdbb2"
+		},
+		"redact": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 20,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{id}",
+			"regionSpot": "center",
+			"font": "mono",
+			"labelSize": 26,
+			"labelColor": "#ebdbb2",
+			"within": "flat",
+			"matteColor": "#000000",
+			"feather": 0.1,
+			"grow": 0.1
+		},
+		"heat": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 12,
+			"hud": "{clock}",
+			"regionStyle": "corners",
+			"color": "#ebdbb2",
+			"lineWidth": 1.5,
+			"regionTemplate": "{CLASS} {pct}",
+			"font": "mono",
+			"labelSize": 16,
+			"labelColor": "#ebdbb2",
+			"world": "thermal",
+			"within": "untouched",
+			"contour": 0.6,
+			"contourWidth": 1,
+			"contourColor": "#ffffff",
+			"hudSize": 18
+		},
+		"spotlight": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 12,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class} {id}",
+			"regionSpot": "below",
+			"font": "mono",
+			"labelSize": 18,
+			"labelColor": "#fabd2f",
+			"world": "dim",
+			"worldAmount": 0.85,
+			"within": "untouched",
+			"feather": 0.6,
+			"grow": 0.12
+		},
+		"marey": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 6,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class} {id}",
+			"regionSpot": "below",
+			"font": "mono",
+			"labelSize": 16,
+			"labelColor": "#ebdbb2",
+			"echo": 8,
+			"echoEvery": 0.18,
+			"echoFade": 0.85,
+			"echoMode": "copies",
+			"contour": 0.5,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2"
+		},
+		"exposure": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 6,
+			"hud": "{clock}",
+			"regionStyle": "none",
+			"regionTemplate": "",
+			"echo": 12,
+			"echoEvery": 0.2,
+			"echoFade": 1,
+			"echoMode": "exposure",
+			"world": "dim",
+			"worldAmount": 0.5,
+			"hudSize": 18,
+			"font": "mono"
+		},
+		"extract": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 60,
+			"ownNumbers": true,
+			"objects": 6,
+			"hud": "",
+			"regionStyle": "corners",
+			"color": "#ebdbb2",
+			"lineWidth": 1.5,
+			"regionTemplate": "{id}",
+			"font": "mono",
+			"labelSize": 16,
+			"labelColor": "#ebdbb2",
+			"echo": 1,
+			"echoEvery": 0.1,
+			"echoFade": 1,
+			"echoMode": "extract"
+		},
+		"plates": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 8,
+			"hud": "{clock}",
+			"regionStyle": "corners",
+			"color": "#ebdbb2",
+			"lineWidth": 1.2,
+			"regionTemplate": "{id}",
+			"regionSpot": "above",
+			"font": "mono",
+			"labelSize": 15,
+			"labelColor": "#ebdbb2",
+			"insets": 3,
+			"insetSide": "right",
+			"insetSize": 0.24,
+			"insetZoom": 1,
+			"insetTemplate": "{id} {class} {pct}",
+			"hudSize": 16,
+			"hudSpot": "bottom-left"
+		},
+		"teletype": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 8,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class} {id}",
+			"regionSpot": "below",
+			"font": "mono",
+			"labelSize": 15,
+			"labelColor": "#fabd2f",
+			"glyphs": "things",
+			"glyphSize": 11,
+			"glyphColor": "#ebdbb2",
+			"glyphBack": "#1d2021",
+			"grow": 0.08
+		},
+		"terminal": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 8,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class} {pct}",
+			"regionSpot": "above",
+			"font": "mono",
+			"labelSize": 15,
+			"labelColor": "#fabd2f",
+			"glyphs": "world",
+			"glyphSize": 12,
+			"glyphColor": "#bdae93",
+			"glyphBack": "#1d2021",
+			"within": "untouched",
+			"contour": 0.9,
+			"contourWidth": 1.5,
+			"contourColor": "#fabd2f"
+		},
+		"sounding": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 8,
+			"hud": "{clock}",
+			"regionStyle": "corners",
+			"color": "#fabd2f",
+			"lineWidth": 1.2,
+			"regionTemplate": "{class} {id}",
+			"regionSpot": "above",
+			"font": "mono",
+			"labelSize": 15,
+			"labelColor": "#fabd2f",
+			"depth": "sweep",
+			"depthAmount": 0.8,
+			"depthColor": "#fabd2f",
+			"depthSpeed": 4,
+			"hudSize": 16,
+			"hudSpot": "bottom-left"
+		},
+		"contours": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 8,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class}",
+			"regionSpot": "above",
+			"font": "mono",
+			"labelSize": 15,
+			"labelColor": "#ebdbb2",
+			"depth": "slices",
+			"depthAmount": 0.6,
+			"depthColor": "#ebdbb2",
+			"depthLines": 18,
+			"world": "dim",
+			"worldAmount": 0.6,
+			"within": "untouched"
+		},
+		"haze": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"objects": 8,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class} {pct}",
+			"regionSpot": "below",
+			"font": "mono",
+			"labelSize": 15,
+			"labelColor": "#ebdbb2",
+			"depth": "fog",
+			"depthAmount": 0.85,
+			"depthColor": "#1d2021"
+		},
+		"print": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 10,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class}",
+			"regionSpot": "above",
+			"labelSize": 15,
+			"labelColor": "#282828",
+			"world": "halftone",
+			"shadow": "#282828",
+			"highlight": "#ebdbb2",
+			"dotSize": 9,
+			"within": "untouched",
+			"contour": 0.9,
+			"contourWidth": 1.5,
+			"contourColor": "#282828"
+		},
+		"1-bit": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 10,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{CLASS} {id}",
+			"regionSpot": "above",
+			"labelSize": 15,
+			"labelColor": "#fabd2f",
+			"world": "dither",
+			"shadow": "#1d2021",
+			"highlight": "#a89984",
+			"dotSize": 8,
+			"within": "untouched",
+			"contour": 0.9,
+			"contourWidth": 1.5,
+			"contourColor": "#fabd2f"
+		},
+		"glitch": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 10,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class} {id}",
+			"regionSpot": "above",
+			"labelSize": 15,
+			"labelColor": "#ebdbb2",
+			"world": "sorted",
+			"sortLevel": 0.3,
+			"sortDir": "down",
+			"within": "untouched",
+			"contour": 0.8,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2"
+		},
+		"melt": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 8,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class} {id}",
+			"regionSpot": "above",
+			"labelSize": 15,
+			"labelColor": "#ebdbb2",
+			"world": "mono",
+			"worldAmount": 0.85,
+			"within": "sorted",
+			"sortLevel": 0.15,
+			"sortDir": "down",
+			"contour": 0.7,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2"
+		},
+		"words": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 12,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "",
+			"glyphs": "words",
+			"glyphSize": 22,
+			"glyphColor": "#282828",
+			"glyphBack": "#e8e2d4",
+			"worldWord": "",
+			"scene": true
+		},
+		"sonar": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 10,
+			"hud": "{clock}",
+			"hudSize": 16,
+			"regionStyle": "none",
+			"regionTemplate": "{class} {id}",
+			"regionSpot": "above",
+			"labelSize": 15,
+			"labelColor": "#8ec07c",
+			"world": "dim",
+			"worldAmount": 0.85,
+			"within": "untouched",
+			"rings": 0.75,
+			"ringSpacing": 30,
+			"ringSpeed": 45,
+			"ringColor": "#8ec07c",
+			"contour": 0.9,
+			"contourWidth": 1.5,
+			"contourColor": "#8ec07c"
+		},
+		"slitscan": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 8,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "{class}",
+			"regionSpot": "above",
+			"labelSize": 15,
+			"labelColor": "#ebdbb2",
+			"echo": 30,
+			"echoEvery": 0.04,
+			"echoFade": 1,
+			"echoMode": "slit",
+			"within": "untouched",
+			"contour": 0.6,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2"
+		},
+		"words flick": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 12,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "",
+			"glyphs": "words",
+			"glyphSize": 22,
+			"glyphColor": "#282828",
+			"glyphBack": "#e8e2d4",
+			"worldWord": "",
+			"scene": true,
+			"reveal": "flick",
+			"revealAt": 0.35,
+			"revealTime": 0.4,
+			"revealJitter": 0.5
+		},
+		"transcript": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 12,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "",
+			"glyphs": "words",
+			"glyphSize": 22,
+			"glyphColor": "#282828",
+			"glyphBack": "#e8e2d4",
+			"worldWord": "",
+			"scene": true,
+			"reveal": "things",
+			"revealAt": 1,
+			"worldInk": 0.75
+		},
+		"rack focus": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 6,
+			"regionTemplate": "",
+			"depth": "focus",
+			"depthAmount": 0.75,
+			"vignette": 0.35,
+			"grain": 0.08
+		},
+		"neon": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{class}",
+			"labelSize": 13,
+			"labelColor": "#fe8019",
+			"world": "black",
+			"worldAmount": 0.88,
+			"within": "flat",
+			"matteColor": "#1d2021",
+			"contour": 1,
+			"contourWidth": 3,
+			"contourColor": "#fe8019"
+		},
+		"infrared": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{CLASS} {pct}",
+			"labelSize": 14,
+			"labelColor": "#ffffff",
+			"world": "thermal",
+			"within": "thermal",
+			"contour": 0.85,
+			"contourWidth": 1.2,
+			"contourColor": "#ffffff",
+			"rings": 0.3,
+			"ringSpacing": 36,
+			"ringSpeed": 30,
+			"ringColor": "#ffffff"
+		},
+		"x-ray": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{class} {id}",
+			"labelSize": 14,
+			"labelColor": "#ebdbb2",
+			"world": "invert",
+			"worldAmount": 1,
+			"saturation": 0.15,
+			"within": "thermal",
+			"contour": 0.6,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2"
+		},
+		"stroboscope": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 6,
+			"regionTemplate": "",
+			"world": "black",
+			"worldAmount": 0.85,
+			"within": "untouched",
+			"echo": 14,
+			"echoEvery": 0.08,
+			"echoFade": 1,
+			"echoMode": "copies"
+		},
+		"light trails": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 8,
+			"regionTemplate": "",
+			"world": "dim",
+			"worldAmount": 0.8,
+			"within": "untouched",
+			"echo": 12,
+			"echoEvery": 0.05,
+			"echoFade": 0.9,
+			"echoMode": "exposure"
+		},
+		"phantom": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 8,
+			"regionTemplate": "{class}",
+			"labelSize": 13,
+			"labelColor": "#a89984",
+			"world": "mono",
+			"worldAmount": 0.75,
+			"within": "untouched",
+			"echo": 10,
+			"echoEvery": 0.1,
+			"echoFade": 0.9,
+			"echoMode": "ghosts",
+			"contour": 0.4,
+			"contourWidth": 1,
+			"contourColor": "#a89984"
+		},
+		"riso": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{class}",
+			"labelSize": 14,
+			"labelColor": "#076678",
+			"world": "dither",
+			"shadow": "#076678",
+			"highlight": "#f2e5bc",
+			"dotSize": 10,
+			"within": "flat",
+			"matteColor": "#fe8019",
+			"grain": 0.15
+		},
+		"pop art": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{CLASS}!",
+			"labelSize": 18,
+			"labelColor": "#1d2021",
+			"world": "halftone",
+			"shadow": "#cc241d",
+			"highlight": "#fbf1c7",
+			"dotSize": 12,
+			"within": "untouched",
+			"contour": 1,
+			"contourWidth": 4,
+			"contourColor": "#1d2021"
+		},
+		"blueprint": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{CLASS} {id}",
+			"labelSize": 14,
+			"labelColor": "#e8f1f8",
+			"world": "duotone",
+			"within": "duotone",
+			"shadow": "#0d2b45",
+			"highlight": "#9fc1dd",
+			"contour": 0.9,
+			"contourWidth": 1.5,
+			"contourColor": "#e8f1f8",
+			"depth": "slices",
+			"depthAmount": 0.5,
+			"depthColor": "#e8f1f8",
+			"depthLines": 22
+		},
+		"sketch": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{class}",
+			"labelSize": 13,
+			"labelColor": "#504945",
+			"world": "flat",
+			"within": "duotone",
+			"matteColor": "#f2e5bc",
+			"contour": 0.9,
+			"contourWidth": 1.4,
+			"contourColor": "#3c3836",
+			"depth": "slices",
+			"depthAmount": 0.55,
+			"depthColor": "#504945",
+			"depthLines": 20,
+			"grain": 0.12,
+			"shadow": "#3c3836",
+			"highlight": "#f2e5bc"
+		},
+		"night ops": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "{clock}",
+			"objects": 10,
+			"regionTemplate": "{CLASS} {id}",
+			"labelSize": 14,
+			"labelColor": "#b8bb26",
+			"hudSize": 16,
+			"world": "night",
+			"worldAmount": 1,
+			"within": "untouched",
+			"rings": 0.45,
+			"ringSpacing": 40,
+			"ringSpeed": 50,
+			"ringColor": "#b8bb26",
+			"contour": 0.7,
+			"contourWidth": 1,
+			"contourColor": "#b8bb26",
+			"scanlines": 0.35
+		},
+		"databend": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"world": "sorted",
+			"sortLevel": 0.2,
+			"sortDir": "across",
+			"within": "pixels",
+			"reveal": "flick",
+			"revealAt": 0.25,
+			"revealTime": 0.3,
+			"revealJitter": 0.7
+		},
+		"words beat": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"objects": 12,
+			"hud": "",
+			"regionStyle": "none",
+			"regionTemplate": "",
+			"glyphs": "words",
+			"glyphSize": 22,
+			"glyphColor": "#282828",
+			"glyphBack": "#e8e2d4",
+			"worldWord": "",
+			"scene": true,
+			"reveal": "flick",
+			"revealAt": 0.4,
+			"revealJitter": 0.3,
+			"beat": true,
+			"beatEvery": 1
+		},
+		"pulse": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "{class}",
+			"labelSize": 14,
+			"labelColor": "#8ec07c",
+			"world": "dim",
+			"worldAmount": 0.9,
+			"within": "untouched",
+			"rings": 0.9,
+			"ringSpacing": 30,
+			"ringSpeed": 60,
+			"ringColor": "#8ec07c",
+			"contour": 0.9,
+			"contourWidth": 1.5,
+			"contourColor": "#8ec07c",
+			"beat": true
+		},
+		"beat copies": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 6,
+			"regionTemplate": "",
+			"world": "mono",
+			"worldAmount": 0.6,
+			"within": "untouched",
+			"echo": 8,
+			"echoEvery": 0.2,
+			"echoFade": 0.9,
+			"echoMode": "copies",
+			"contour": 0.5,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2",
+			"beat": true
+		},
+		"foresight": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionStyle": "corners",
+			"color": "#fe8019",
+			"lineWidth": 1.5,
+			"regionTemplate": "{class} {id}",
+			"labelSize": 14,
+			"labelColor": "#fe8019",
+			"foresight": 2,
+			"foresightColor": "#fe8019"
+		},
+		"trajectory": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionSpot": "above",
+			"hud": "{clock}",
+			"objects": 10,
+			"regionStyle": "none",
+			"regionTemplate": "{CLASS} {id}",
+			"labelSize": 14,
+			"labelColor": "#8ec07c",
+			"world": "dim",
+			"worldAmount": 0.85,
+			"within": "untouched",
+			"contour": 0.9,
+			"contourWidth": 1.5,
+			"contourColor": "#8ec07c",
+			"foresight": 3,
+			"foresightColor": "#8ec07c",
+			"hudSize": 16
+		},
+		"datamosh": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"mosh": "always",
+			"moshWhere": "world",
+			"moshHold": 3
+		},
+		"bloom": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"mosh": "on cuts",
+			"moshWhere": "all",
+			"moshHold": 0.7,
+			"world": "crushed",
+			"crush": 0.5
+		},
+		"crush": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"world": "crushed",
+			"crush": 0.95,
+			"within": "untouched",
+			"contour": 0.5,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2",
+			"stutter": 0.25,
+			"stutterLen": 3,
+			"beat": true
+		},
+		"corrupt": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"world": "stride",
+			"bend": 0.3,
+			"within": "bits",
+			"tear": 0.15
+		},
+		"vhs": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "PLAY ▶  {clock}",
+			"objects": 10,
+			"regionTemplate": "",
+			"tear": 0.65,
+			"grain": 0.12,
+			"vignette": 0.35,
+			"labelSize": 18,
+			"labelColor": "#ebdbb2"
+		},
+		"trichrome": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"trichrome": 0.12
+		},
+		"skip": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"stutter": 0.5,
+			"stutterLen": 4,
+			"beat": true,
+			"world": "crushed",
+			"crush": 0.6
+		},
+		"real mosh": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"mosh": "real cuts",
+			"moshHold": 2.5
+		},
+		"mosh beats": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"mosh": "real beats",
+			"moshHold": 1.2,
+			"beat": true
+		},
+		"blocks": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"world": "blocks",
+			"bend": 0.6,
+			"within": "untouched",
+			"contour": 0.5,
+			"contourWidth": 1,
+			"contourColor": "#ebdbb2"
+		},
+		"vapor": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"world": "vapor",
+			"within": "same",
+			"tear": 0.1
+		},
+		"kaleido": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"kaleido": 6,
+			"kaleidoSpin": 2
+		}
+	},
+	"knobs": [
+		{
+			"name": "objects",
+			"note": "box text: {class} {CLASS} {conf} {pct} {id} {x} {y} {w} {h} {v}",
+			"knobs": [
+				{
+					"k": "detect",
+					"label": "recognise things",
+					"kind": "toggle",
+					"hint": "people, cars, animals and so on, 80 kinds in all; downloads about 50 MB the first time"
+				},
+				{
+					"k": "objectKinds",
+					"label": "look for",
+					"options": [
+						"things that move",
+						"people",
+						"vehicles",
+						"animals",
+						"everything"
+					]
+				},
+				{
+					"k": "confidence",
+					"label": "confidence",
+					"min": 0.15,
+					"max": 0.95,
+					"step": 0.01,
+					"hint": "lower finds more, and more wrong things"
+				},
+				{
+					"k": "objects",
+					"label": "most boxes",
+					"min": 1,
+					"max": 60,
+					"step": 1
+				},
+				{
+					"k": "perObject",
+					"label": "numbers each",
+					"min": 0,
+					"max": 30,
+					"step": 1,
+					"hint": "how many tracked points on each object get a number"
+				},
+				{
+					"k": "detectEvery",
+					"label": "look every (ms)",
+					"min": 30,
+					"max": 1000,
+					"step": 10
+				},
+				{
+					"k": "regionTemplate",
+					"label": "box text",
+					"kind": "text"
+				},
+				{
+					"k": "regionSpot",
+					"label": "where",
+					"options": [
+						"above",
+						"below",
+						"center",
+						"right",
+						"auto"
+					]
+				},
+				{
+					"k": "ownNumbers",
+					"label": "number from 1",
+					"kind": "toggle",
+					"hint": "objects count up by themselves, instead of sharing the numbers of the points"
+				}
+			]
+		},
+		{
+			"name": "subject",
+			"note": "what moves by itself, with the camera taken out",
+			"knobs": [
+				{
+					"k": "focus",
+					"label": "ignore background",
+					"min": 0,
+					"max": 1,
+					"step": 0.01,
+					"hint": "at 0 the whole picture is fair game"
+				},
+				{
+					"k": "stabilize",
+					"label": "ignore camera",
+					"kind": "toggle",
+					"hint": "don't count the camera moving as things moving"
+				},
+				{
+					"k": "sensitivity",
+					"label": "sensitivity",
+					"min": 0,
+					"max": 1,
+					"step": 0.01,
+					"hint": "higher picks up subtler movement, and more of the wrong things"
+				},
+				{
+					"k": "memory",
+					"label": "memory",
+					"min": 0,
+					"max": 1,
+					"step": 0.01,
+					"hint": "how long a subject that stops moving is kept"
+				},
+				{
+					"k": "subjects",
+					"label": "most subjects",
+					"min": 1,
+					"max": 24,
+					"step": 1
+				},
+				{
+					"k": "subjectMin",
+					"label": "smallest",
+					"min": 0.02,
+					"max": 8,
+					"step": 0.02,
+					"hint": "as a percentage of the frame"
+				},
+				{
+					"k": "showSubject",
+					"label": "show what it sees",
+					"kind": "toggle",
+					"hint": "red is subject, blue is movement it decided against"
+				}
+			]
+		},
+		{
+			"name": "find",
+			"note": "what attracts a point",
+			"knobs": [
+				{
+					"k": "edges",
+					"label": "edges",
+					"min": 0,
+					"max": 2,
+					"step": 0.01
+				},
+				{
+					"k": "motion",
+					"label": "motion",
+					"min": 0,
+					"max": 2,
+					"step": 0.01
+				},
+				{
+					"k": "bright",
+					"label": "bright areas",
+					"min": 0,
+					"max": 2,
+					"step": 0.01
+				},
+				{
+					"k": "dark",
+					"label": "dark areas",
+					"min": 0,
+					"max": 2,
+					"step": 0.01
+				},
+				{
+					"k": "threshold",
+					"label": "threshold",
+					"min": 0.02,
+					"max": 1.5,
+					"step": 0.01
+				},
+				{
+					"k": "spacing",
+					"label": "spacing",
+					"min": 3,
+					"max": 32,
+					"step": 1
+				},
+				{
+					"k": "points",
+					"label": "most points",
+					"min": 5,
+					"max": 800,
+					"step": 5
+				},
+				{
+					"k": "detail",
+					"label": "detail",
+					"min": 90,
+					"max": 480,
+					"step": 10,
+					"hint": "how many pixels across it looks at; higher costs more"
+				}
+			]
+		},
+		{
+			"name": "follow",
+			"knobs": [
+				{
+					"k": "reach",
+					"label": "reach",
+					"min": 0.5,
+					"max": 25,
+					"step": 0.5,
+					"hint": "how far a point can jump and still be the same point"
+				},
+				{
+					"k": "linger",
+					"label": "linger",
+					"min": 0,
+					"max": 60,
+					"step": 1,
+					"hint": "frames a lost point stays on screen"
+				},
+				{
+					"k": "smooth",
+					"label": "smoothing",
+					"min": 0,
+					"max": 0.95,
+					"step": 0.01
+				},
+				{
+					"k": "idBase",
+					"label": "first id",
+					"min": 0,
+					"max": 99000,
+					"step": 1
+				}
+			]
+		},
+		{
+			"name": "boxes",
+			"knobs": [
+				{
+					"k": "boxes",
+					"label": "how many",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "sizeMin",
+					"label": "smallest",
+					"min": 2,
+					"max": 200,
+					"step": 1
+				},
+				{
+					"k": "sizeMax",
+					"label": "largest",
+					"min": 2,
+					"max": 500,
+					"step": 1
+				},
+				{
+					"k": "boxStyle",
+					"label": "style",
+					"options": [
+						"full",
+						"corners",
+						"brackets",
+						"dashed",
+						"cross",
+						"diamond",
+						"ring",
+						"dot"
+					]
+				},
+				{
+					"k": "lineWidth",
+					"label": "line",
+					"min": 0.5,
+					"max": 8,
+					"step": 0.1
+				},
+				{
+					"k": "color",
+					"label": "colour",
+					"kind": "color"
+				},
+				{
+					"k": "colorBy",
+					"label": "colours",
+					"options": [
+						"one colour",
+						"by kind",
+						"each its own"
+					]
+				},
+				{
+					"k": "opacity",
+					"label": "opacity",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "regions",
+					"label": "big boxes",
+					"min": 0,
+					"max": 30,
+					"step": 1
+				},
+				{
+					"k": "regionSize",
+					"label": "big box size",
+					"min": 5,
+					"max": 80,
+					"step": 1
+				},
+				{
+					"k": "regionMin",
+					"label": "points to make one",
+					"min": 2,
+					"max": 40,
+					"step": 1
+				},
+				{
+					"k": "regionStyle",
+					"label": "big box style",
+					"options": [
+						"same",
+						"full",
+						"corners",
+						"brackets",
+						"dashed",
+						"diamond",
+						"ring",
+						"foot",
+						"sights",
+						"none"
+					],
+					"hint": "foot is a ring on the ground under it; sights runs lines out to the edges of the frame"
+				}
+			]
+		},
+		{
+			"name": "labels",
+			"note": "{id} {x} {y} {w} {h} {age} {v} {conf} {tag}",
+			"knobs": [
+				{
+					"k": "labels",
+					"label": "how many",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "template",
+					"label": "text",
+					"kind": "text"
+				},
+				{
+					"k": "words",
+					"label": "{tag} words",
+					"kind": "text"
+				},
+				{
+					"k": "font",
+					"label": "font",
+					"options": [
+						"condensed",
+						"mono",
+						"tech",
+						"terminal",
+						"system"
+					]
+				},
+				{
+					"k": "labelSize",
+					"label": "size",
+					"min": 6,
+					"max": 80,
+					"step": 1
+				},
+				{
+					"k": "labelColor",
+					"label": "colour",
+					"kind": "color"
+				},
+				{
+					"k": "labelSpot",
+					"label": "where",
+					"options": [
+						"auto",
+						"right",
+						"center",
+						"above",
+						"below"
+					]
+				},
+				{
+					"k": "labelBacking",
+					"label": "backing",
+					"kind": "toggle"
+				},
+				{
+					"k": "labelBack",
+					"label": "backing colour",
+					"kind": "color"
+				}
+			]
+		},
+		{
+			"name": "lines",
+			"knobs": [
+				{
+					"k": "linkMode",
+					"label": "shape",
+					"options": [
+						"off",
+						"hub",
+						"nearest",
+						"chain",
+						"objects"
+					],
+					"hint": "objects joins the big boxes to each other instead of the points"
+				},
+				{
+					"k": "hubs",
+					"label": "hubs",
+					"min": 1,
+					"max": 20,
+					"step": 1
+				},
+				{
+					"k": "linkCount",
+					"label": "lines each",
+					"min": 1,
+					"max": 16,
+					"step": 1
+				},
+				{
+					"k": "linkMax",
+					"label": "longest",
+					"min": 3,
+					"max": 200,
+					"step": 1
+				},
+				{
+					"k": "linkWidth",
+					"label": "width",
+					"min": 0.5,
+					"max": 6,
+					"step": 0.1
+				},
+				{
+					"k": "linkColor",
+					"label": "colour",
+					"kind": "color"
+				},
+				{
+					"k": "linkOpacity",
+					"label": "opacity",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				}
+			]
+		},
+		{
+			"name": "trails",
+			"note": "where things have been",
+			"knobs": [
+				{
+					"k": "trail",
+					"label": "length",
+					"min": 0,
+					"max": 300,
+					"step": 1,
+					"hint": "in frames; 0 is none"
+				},
+				{
+					"k": "trailOf",
+					"label": "behind",
+					"options": [
+						"objects",
+						"points",
+						"both"
+					]
+				},
+				{
+					"k": "trailWidth",
+					"label": "width",
+					"min": 0.5,
+					"max": 10,
+					"step": 0.1
+				}
+			]
+		},
+		{
+			"name": "patches",
+			"note": "boxes filled with something",
+			"knobs": [
+				{
+					"k": "patches",
+					"label": "how many",
+					"min": 0,
+					"max": 0.6,
+					"step": 0.01
+				},
+				{
+					"k": "patchMode",
+					"label": "kind",
+					"options": [
+						"mixed",
+						"fill",
+						"invert",
+						"pixels",
+						"zoom"
+					]
+				},
+				{
+					"k": "patchColor",
+					"label": "colour",
+					"kind": "color"
+				}
+			]
+		},
+		{
+			"name": "picture",
+			"knobs": [
+				{
+					"k": "brightness",
+					"label": "brightness",
+					"min": -0.6,
+					"max": 0.6,
+					"step": 0.01
+				},
+				{
+					"k": "contrast",
+					"label": "contrast",
+					"min": 0,
+					"max": 4,
+					"step": 0.01
+				},
+				{
+					"k": "saturation",
+					"label": "saturation",
+					"min": 0,
+					"max": 4,
+					"step": 0.01
+				},
+				{
+					"k": "hue",
+					"label": "hue",
+					"min": -180,
+					"max": 180,
+					"step": 1
+				},
+				{
+					"k": "sharpen",
+					"label": "sharpen",
+					"min": 0,
+					"max": 3,
+					"step": 0.01
+				},
+				{
+					"k": "solarize",
+					"label": "solarize",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "solarAt",
+					"label": "solarize from",
+					"min": 0.05,
+					"max": 0.95,
+					"step": 0.01
+				},
+				{
+					"k": "posterize",
+					"label": "posterize",
+					"min": 0,
+					"max": 16,
+					"step": 1
+				},
+				{
+					"k": "invert",
+					"label": "invert",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "palette",
+					"label": "palette",
+					"options": [
+						"off",
+						"duotone",
+						"thermal",
+						"night"
+					]
+				},
+				{
+					"k": "paletteMix",
+					"label": "palette amount",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "shadow",
+					"label": "duotone dark",
+					"kind": "color"
+				},
+				{
+					"k": "highlight",
+					"label": "duotone light",
+					"kind": "color"
+				},
+				{
+					"k": "split",
+					"label": "colour split",
+					"min": 0,
+					"max": 40,
+					"step": 0.5
+				},
+				{
+					"k": "scanlines",
+					"label": "scanlines",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "grain",
+					"label": "grain",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "vignette",
+					"label": "vignette",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "pixelate",
+					"label": "pixelate",
+					"min": 1,
+					"max": 48,
+					"step": 1
+				},
+				{
+					"k": "glitch",
+					"label": "glitch",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				}
+			]
+		},
+		{
+			"name": "overlay text",
+			"note": "{rec} {clock} {date} {n} {regions} {counts} {list} {frame} {fps} {file}",
+			"knobs": [
+				{
+					"k": "hud",
+					"label": "text",
+					"kind": "lines"
+				},
+				{
+					"k": "hudSpot",
+					"label": "where",
+					"options": [
+						"top-left",
+						"top-right",
+						"bottom-left",
+						"bottom-right"
+					]
+				},
+				{
+					"k": "hudSize",
+					"label": "size",
+					"min": 8,
+					"max": 90,
+					"step": 1
+				},
+				{
+					"k": "hudColor",
+					"label": "colour",
+					"kind": "color"
+				}
+			]
+		},
+		{
+			"name": "output",
+			"knobs": [
+				{
+					"k": "speed",
+					"label": "playback speed",
+					"min": 0.1,
+					"max": 2,
+					"step": 0.05
+				},
+				{
+					"k": "outMax",
+					"label": "longest side",
+					"min": 480,
+					"max": 3840,
+					"step": 10
+				},
+				{
+					"k": "bitrate",
+					"label": "recording Mbps",
+					"min": 2,
+					"max": 80,
+					"step": 1
+				}
+			]
+		},
+		{
+			"name": "layers",
+			"note": "what's followed changes the picture itself: the things, and the rest of the world, each made into something else through a soft-edged shape",
+			"knobs": [
+				{
+					"k": "world",
+					"label": "the world",
+					"hint": "what everything that isn't followed becomes; dither and halftone use the look's shadow and highlight colours as ink and paper; sorted smears its bright runs into streaks",
+					"options": [
+						"same",
+						"mono",
+						"dim",
+						"black",
+						"thermal",
+						"night",
+						"duotone",
+						"pixels",
+						"blur",
+						"dither",
+						"halftone",
+						"sorted",
+						"crushed",
+						"stride",
+						"bits",
+						"blocks",
+						"vapor"
+					]
+				},
+				{
+					"k": "worldAmount",
+					"label": "how much",
+					"hint": "how far the world goes toward that",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "within",
+					"label": "the things",
+					"hint": "what the things followed become; untouched leaves them as shot, before the look's colour",
+					"options": [
+						"same",
+						"untouched",
+						"flat",
+						"invert",
+						"mono",
+						"thermal",
+						"night",
+						"duotone",
+						"pixels",
+						"blur",
+						"dither",
+						"halftone",
+						"sorted",
+						"crushed",
+						"stride",
+						"bits",
+						"blocks",
+						"vapor"
+					]
+				},
+				{
+					"k": "matteColor",
+					"label": "flat colour",
+					"hint": "the colour things become when they're flat",
+					"kind": "color"
+				},
+				{
+					"k": "sortLevel",
+					"label": "sort above",
+					"hint": "sorted: how bright a run of pixels must be to be sorted; lower smears more",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "sortDir",
+					"label": "sort",
+					"hint": "sorted: down the picture, or across it",
+					"options": [
+						"down",
+						"across"
+					]
+				},
+				{
+					"k": "dotSize",
+					"label": "dot size",
+					"hint": "halftone and dither: how big the dots are",
+					"min": 2,
+					"max": 32,
+					"step": 1
+				},
+				{
+					"k": "crush",
+					"label": "crushed",
+					"hint": "crushed: how badly the JPEG's saved, 1 at quality 1 (blocks, rings, colour smeared)",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "bend",
+					"label": "bent",
+					"hint": "stride: how far off the row width is (past half, a byte late too, so the colours turn); bits: how few are left, and how many bands go wrong",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "matte",
+					"label": "shape from",
+					"hint": "outline: each thing's true shape, from EdgeTAM on the graphics card; cutout: what in each box doesn't look like what's around it; boxes: a rounded shape in each box; movement: the shape of what moved, coarser; both: cutout and movement",
+					"options": [
+						"outline",
+						"cutout",
+						"boxes",
+						"movement",
+						"both"
+					]
+				},
+				{
+					"k": "feather",
+					"label": "softness",
+					"hint": "how soft the shape's edge is",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "grow",
+					"label": "grow",
+					"hint": "swell the shape out, or draw it in",
+					"min": -0.4,
+					"max": 0.4,
+					"step": 0.02
+				},
+				{
+					"k": "contour",
+					"label": "contour",
+					"hint": "a line along the shape's edge",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "contourWidth",
+					"label": "contour width",
+					"min": 0.5,
+					"max": 8,
+					"step": 0.5
+				},
+				{
+					"k": "contourColor",
+					"label": "contour colour",
+					"kind": "color"
+				},
+				{
+					"k": "rings",
+					"label": "sonar rings",
+					"hint": "rings spreading out from the things across the world, as from a ping",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "ringSpacing",
+					"label": "ring spacing",
+					"min": 8,
+					"max": 120,
+					"step": 2
+				},
+				{
+					"k": "ringSpeed",
+					"label": "ring speed",
+					"hint": "how fast they spread; 0 holds them still",
+					"min": 0,
+					"max": 200,
+					"step": 5
+				},
+				{
+					"k": "ringColor",
+					"label": "ring colour",
+					"kind": "color"
+				}
+			]
+		},
+		{
+			"name": "echo",
+			"note": "time in the picture: the things followed leave copies of themselves behind, smear like a long exposure, or show only what moved",
+			"knobs": [
+				{
+					"k": "echo",
+					"label": "echo",
+					"hint": "how many copies are left behind (0 is none); for exposure and extract, how long the effect lasts",
+					"min": 0,
+					"max": 16,
+					"step": 1
+				},
+				{
+					"k": "echoEvery",
+					"label": "every",
+					"hint": "seconds between copies; for extract, how far back the picture it's laid over is",
+					"min": 0.05,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "echoFade",
+					"label": "fade",
+					"hint": "how much the oldest copies have faded; for extract, how much of it there is",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "echoMode",
+					"label": "kind",
+					"hint": "copies: crisp cut-outs; ghosts: faint grey ones; exposure: a long exposure of the things alone; extract: what's still turns grey and only what moved shows; slit: a slit-scan, each row of the world a moment further back than the one above it (over copies times how often), the things as they are now",
+					"options": [
+						"copies",
+						"ghosts",
+						"exposure",
+						"extract",
+						"slit"
+					]
+				}
+			]
+		},
+		{
+			"name": "insets",
+			"note": "magnified live crops of the things followed, docked along one edge, each with a caption and a line out to the thing",
+			"knobs": [
+				{
+					"k": "insets",
+					"label": "insets",
+					"hint": "how many (0 is none); as many as fit",
+					"min": 0,
+					"max": 8,
+					"step": 1
+				},
+				{
+					"k": "insetSide",
+					"label": "side",
+					"options": [
+						"right",
+						"left",
+						"top",
+						"bottom"
+					]
+				},
+				{
+					"k": "insetSize",
+					"label": "size",
+					"hint": "each cell's side, as a share of the frame's shorter side",
+					"min": 0.08,
+					"max": 0.45,
+					"step": 0.01
+				},
+				{
+					"k": "insetZoom",
+					"label": "zoom",
+					"hint": "1 fits the whole thing in its cell; more closes in on its middle",
+					"min": 0.5,
+					"max": 4,
+					"step": 0.1
+				},
+				{
+					"k": "insetTemplate",
+					"label": "caption",
+					"hint": "{id} {class} {CLASS} {pct} {w} {h} {x} {y} {zoom}",
+					"kind": "text"
+				},
+				{
+					"k": "insetColor",
+					"label": "colour",
+					"kind": "color"
+				}
+			]
+		},
+		{
+			"name": "glyphs",
+			"note": "the picture as characters, picked by brightness, in the look's font",
+			"knobs": [
+				{
+					"k": "glyphs",
+					"label": "glyphs",
+					"hint": "where: over the things followed, the world around them, or all of it; words: the picture becomes paper and each thing is typed out as its name, filling its shape",
+					"options": [
+						"off",
+						"things",
+						"world",
+						"all",
+						"words"
+					]
+				},
+				{
+					"k": "glyphSize",
+					"label": "size",
+					"hint": "a character's height, as if the frame were 1080 high",
+					"min": 6,
+					"max": 48,
+					"step": 1
+				},
+				{
+					"k": "glyphRamp",
+					"label": "characters",
+					"hint": "darkest to brightest",
+					"kind": "text"
+				},
+				{
+					"k": "glyphColor",
+					"label": "ink",
+					"kind": "color"
+				},
+				{
+					"k": "glyphBack",
+					"label": "ground",
+					"kind": "color"
+				},
+				{
+					"k": "glyphTint",
+					"label": "picture's colours",
+					"hint": "ink each character in the picture's own colour there",
+					"kind": "toggle"
+				},
+				{
+					"k": "scene",
+					"label": "label the world",
+					"hint": "words: type the world as what it is (sky, sea, tree, road…), from SegFormer on the graphics card",
+					"kind": "toggle"
+				},
+				{
+					"k": "worldWord",
+					"label": "the world as",
+					"hint": "words: what the world is typed as; empty leaves it paper",
+					"kind": "text"
+				},
+				{
+					"k": "worldInk",
+					"label": "world's ink",
+					"hint": "words: how strongly the world is typed beside the things; darker parts of the picture are typed harder",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				}
+			]
+		},
+		{
+			"name": "depth",
+			"note": "how far away each part of the picture is (Depth Anything V2 on the graphics card), and what that does to it",
+			"knobs": [
+				{
+					"k": "depth",
+					"label": "depth",
+					"hint": "fog: far things fade into the colour; slices: lines where the scene crosses each of a set of depths; sweep: a band of depth sweeping far to near and back; focus: a lens pulling focus to the main thing followed, everything nearer or farther softening",
+					"options": [
+						"off",
+						"fog",
+						"slices",
+						"sweep",
+						"focus"
+					]
+				},
+				{
+					"k": "depthAmount",
+					"label": "amount",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "depthColor",
+					"label": "colour",
+					"kind": "color"
+				},
+				{
+					"k": "depthLines",
+					"label": "slices",
+					"hint": "how many depths get a line",
+					"min": 2,
+					"max": 48,
+					"step": 1
+				},
+				{
+					"k": "depthSpeed",
+					"label": "sweep time",
+					"hint": "seconds to sweep far to near and back",
+					"min": 0.5,
+					"max": 12,
+					"step": 0.5
+				}
+			]
+		},
+		{
+			"name": "looking ahead",
+			"note": "exports go over the whole clip with the detector first, so things are there from the first frame they're seen, end where the footage cuts, and boxes don't lag; the preview does too once it's looked",
+			"knobs": [
+				{
+					"k": "ahead",
+					"label": "look ahead",
+					"hint": "off follows things as they come, the cautious way the site has to",
+					"kind": "toggle"
+				},
+				{
+					"k": "aheadSmooth",
+					"label": "smoothing",
+					"hint": "seconds boxes are smoothed over, both ways in time: 0 is the detector's own boxes, higher is steadier",
+					"min": 0,
+					"max": 0.3,
+					"step": 0.01
+				}
+			]
+		},
+		{
+			"name": "camera",
+			"note": "follow cam: a virtual camera that keeps what's followed in frame, for turning a landscape clip into a 9:16 one. Pick a shape to export at; with picked things it follows them, otherwise the main thing",
+			"knobs": [
+				{
+					"k": "follow",
+					"label": "follow",
+					"hint": "move the frame with what's followed",
+					"kind": "toggle"
+				},
+				{
+					"k": "followZoom",
+					"label": "zoom",
+					"hint": "0 keeps the frame as big as it goes; higher closes in until the thing fills more of it",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "followSmooth",
+					"label": "smoothness",
+					"hint": "seconds the camera takes to settle: low is quick and nervous, high is slow and steady",
+					"min": 0.1,
+					"max": 3,
+					"step": 0.1
+				}
+			]
+		},
+		{
+			"name": "slow motion",
+			"note": "slowed down, exports make the frames between with RIFE on the graphics card, so the movement stays smooth rather than each frame showing again, in the preview too",
+			"knobs": [
+				{
+					"k": "speed",
+					"label": "speed",
+					"hint": "under 1 is slow motion",
+					"min": 0.1,
+					"max": 2,
+					"step": 0.05
+				},
+				{
+					"k": "smoothSlow",
+					"label": "smooth",
+					"hint": "make the frames between rather than showing each again",
+					"kind": "toggle"
+				}
+			]
+		},
+		{
+			"name": "reveal",
+			"note": "the picture as it was against the look: side by side, in quick cuts between them, or the things (or the world) left as they were",
+			"knobs": [
+				{
+					"k": "reveal",
+					"label": "reveal",
+					"hint": "split: the left as it was; sweep: that line sweeping across and back; flick: hard cuts to the picture as it was; things: the things as they were, the look round them; world: the reverse",
+					"options": [
+						"off",
+						"split",
+						"sweep",
+						"flick",
+						"things",
+						"world"
+					]
+				},
+				{
+					"k": "revealAt",
+					"label": "how much",
+					"hint": "split and sweep: how far across; flick: how much of each beat shows the picture as it was; things and world: how strongly",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "revealTime",
+					"label": "beat",
+					"hint": "flick: seconds a beat; sweep: seconds across and back",
+					"min": 0.05,
+					"max": 12,
+					"step": 0.05
+				},
+				{
+					"k": "revealJitter",
+					"label": "irregular",
+					"hint": "flick: 0 cuts on every beat; higher skips and holds beats, like a hand on the cut",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				}
+			]
+		},
+		{
+			"name": "mix",
+			"note": "another look drawn over the same clip and put together with this one: right-click (or shift-click) a look on the left to mix it in",
+			"knobs": [
+				{
+					"k": "mix",
+					"label": "with",
+					"hint": "the other look: right-click or shift-click one on the left",
+					"kind": "look"
+				},
+				{
+					"k": "mixHow",
+					"label": "how",
+					"hint": "things: the other look on the things; world: on the rest; over: the other look's marks (boxes, labels, text, insets) on top of this whole look, untouched by it; under: this look's marks on top of the other's whole picture; split: the other on the left; sweep: that line sweeping across and back; flick: hard cuts between them (on the beat, with beat on); blend: one over the other; lighter: the lighter of the two",
+					"options": [
+						"things",
+						"world",
+						"over",
+						"under",
+						"split",
+						"sweep",
+						"flick",
+						"blend",
+						"lighter"
+					]
+				},
+				{
+					"k": "mixAt",
+					"label": "how much",
+					"hint": "things and world: how strongly; split and sweep: how far across; flick: how much of each beat is the other look; blend: how much of the other",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "mixTime",
+					"label": "beat",
+					"hint": "flick: seconds a beat (without the music's); sweep: seconds across and back",
+					"min": 0.05,
+					"max": 12,
+					"step": 0.05
+				},
+				{
+					"k": "mixJitter",
+					"label": "irregular",
+					"hint": "flick: 0 cuts on every beat; higher skips and holds some",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				}
+			]
+		},
+		{
+			"name": "glitch",
+			"note": "broken video on purpose: the picture dragged along by its own motion (datamosh, drawn or for real), a worn tape, colours from three moments, a skipping buffer, a kaleidoscope round what's followed",
+			"knobs": [
+				{
+					"k": "mosh",
+					"label": "datamosh",
+					"hint": "the picture pushed along by its own motion rather than drawn again, as a video plays with its key frames lost. Drawn: always (blocks come back now and then), or on cuts. Real: the clip re-encoded and its key frames taken out at its cuts, or a frame's motion played over and over on the beats (a few seconds to make, then kept)",
+					"options": [
+						"off",
+						"on cuts",
+						"always",
+						"real cuts",
+						"real beats"
+					]
+				},
+				{
+					"k": "moshWhere",
+					"label": "on",
+					"hint": "moshed: all of the picture, the world round the things, or the things",
+					"options": [
+						"all",
+						"world",
+						"things"
+					]
+				},
+				{
+					"k": "moshHold",
+					"label": "hold",
+					"hint": "on cuts: seconds the last shot's held and pushed about; always: about how long a block lasts before it's drawn again",
+					"min": 0.2,
+					"max": 8,
+					"step": 0.1
+				},
+				{
+					"k": "tear",
+					"label": "tape",
+					"hint": "a worn tape: rows wobbling, a tracking tear rolling down, colour bleeding, scanlines",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "trichrome",
+					"label": "trichrome",
+					"hint": "seconds between red, green and blue: what's still keeps its colours, what moves splits into three",
+					"min": 0,
+					"max": 1,
+					"step": 0.01
+				},
+				{
+					"k": "stutter",
+					"label": "stutter",
+					"hint": "a skipping buffer: the chance each beat (with beat on), or about how often a second, that a few frames loop",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "stutterLen",
+					"label": "frames",
+					"hint": "how many frames a stutter loops",
+					"min": 2,
+					"max": 16,
+					"step": 1
+				},
+				{
+					"k": "kaleido",
+					"label": "kaleidoscope",
+					"hint": "how many mirrored wedges (0 is off), round the biggest thing on show",
+					"min": 0,
+					"max": 16,
+					"step": 1
+				},
+				{
+					"k": "kaleidoSpin",
+					"label": "turning",
+					"hint": "the kaleidoscope's turns a minute (negative the other way)",
+					"min": -12,
+					"max": 12,
+					"step": 0.5
+				}
+			]
+		},
+		{
+			"name": "beat",
+			"note": "on the music: flicks cut, copies are taken and sonar rings pulse on the clip's beats, found in its sound",
+			"knobs": [
+				{
+					"k": "beat",
+					"label": "on the beat",
+					"hint": "flick, copies and sonar rings follow the music's beats rather than a steady time",
+					"kind": "toggle"
+				},
+				{
+					"k": "beatEvery",
+					"label": "every",
+					"hint": "every beat, every second, every fourth…",
+					"min": 1,
+					"max": 8,
+					"step": 1
+				}
+			]
+		},
+		{
+			"name": "foresight",
+			"note": "where each thing is going: its path over the next few seconds and where it ends up, from looking ahead (only spotter can know)",
+			"knobs": [
+				{
+					"k": "foresight",
+					"label": "seconds ahead",
+					"hint": "how far ahead to draw each thing's path; 0 is off",
+					"min": 0,
+					"max": 5,
+					"step": 0.25
+				},
+				{
+					"k": "foresightColor",
+					"label": "colour",
+					"kind": "color"
+				}
+			]
+		}
+	],
+	"finding": [
+		"edges",
+		"motion",
+		"bright",
+		"dark",
+		"threshold",
+		"spacing",
+		"points",
+		"detail",
+		"reach",
+		"regions",
+		"regionSize",
+		"regionMin",
+		"focus",
+		"sensitivity",
+		"subjects",
+		"subjectMin",
+		"detect",
+		"objectKinds",
+		"confidence",
+		"objects"
+	]
+}

@@ -1,0 +1,36 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+spotter-core = { path = "crates/spotter-core" }
+anyhow = "1.0.104"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1.0.154", features = ["preserve_order"] }
+rayon = "1.12.0"
+tiny-skia = "0.12.0"
+ab_glyph = "0.2.32"
+clap = { version = "4.6.7", features = ["derive"] }
+ort = { version = "=2.0.0-rc.15", default-features = false, features = ["std", "download-binaries", "copy-dylibs", "tls-native", "api-31"] }
+rune = { git = "https://github.com/anomalyco/rune", rev = "711d9574074baf69c63f4bbf36d6a843581595ce", features = ["native-file-dialog"] }
+rune-kit = { git = "https://github.com/anomalyco/rune", rev = "711d9574074baf69c63f4bbf36d6a843581595ce" }
+
+# the tracking and drawing loops are far too slow unoptimised, even while working on them
+# drawing a frame takes the frame, the look, the boxes, the matte, the time…: a struct for each set
+# would only be read once
+[workspace.lints.clippy]
+too_many_arguments = "allow"
+
+[profile.dev]
+opt-level = 1
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+lto = "thin"

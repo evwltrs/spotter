@@ -1,0 +1,33 @@
+{
+  "source": "clip.mp4",
+  "name": "clip",
+  "preset": "heat",
+  "look": {
+    "points": 9.0,
+    "detect": true
+  },
+  "edit": {
+    "picks": [
+      {
+        "t": 1.25,
+        "x": 0.4,
+        "y": 0.6
+      }
+    ],
+    "ranges": [
+      {
+        "from": 2.0,
+        "to": 2.5,
+        "mode": "cut"
+      }
+    ]
+  },
+  "size": [
+    1080,
+    1920
+  ],
+  "upscale": true,
+  "model": "x365",
+  "in": 1.5,
+  "out": null
+}

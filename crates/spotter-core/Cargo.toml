@@ -1,0 +1,26 @@
+[package]
+name = "spotter-core"
+description = "Finds and follows what moves in a video and draws over it"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+default = ["directml"]
+directml = ["ort/directml"]
+webgpu = ["ort/webgpu"]
+
+[dependencies]
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rayon.workspace = true
+tiny-skia.workspace = true
+ab_glyph.workspace = true
+ort.workspace = true
+prost = "0.14.5"
+hmac-sha256 = "1.1.15"

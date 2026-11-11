@@ -1,0 +1,14 @@
+# cargo xtask check, on a clean Windows machine. Run by hand from the Actions tab;
+# add `push:` under `on:` to run it on every push.
+name: ci
+on:
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo xtask check

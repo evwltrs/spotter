@@ -1,0 +1,13 @@
+/target
+/out
+*.mp4
+*.mov
+*.onnx
+# test clips, kept out of git
+/bench
+/dist
+# notes kept on this machine, not in the repository
+/docs/*.md
+/CONTRIBUTING.md
+# made by cargo xtask package for the release zip
+/THIRD-PARTY.md

@@ -1,0 +1,32 @@
+# Builds the Windows zip (cargo xtask package). A tag like v0.1.0 that matches Cargo.toml's version
+# makes a draft release with the zip on it, to read over and publish by hand. Run from the Actions
+# tab, it only keeps the zip with the run.
+name: release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - if: github.ref_type == 'tag'
+        run: cargo xtask package --tag "$GITHUB_REF_NAME"
+      - if: github.ref_type != 'tag'
+        run: cargo xtask package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spotter-windows-x64
+          path: dist/*.zip
+      - name: draft release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.zip --draft --verify-tag --title "$GITHUB_REF_NAME" --notes ''
