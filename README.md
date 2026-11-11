@@ -5,7 +5,7 @@
 spotter tracks what moves in a video and draws over it. its models run on the gpu, and it looks over
 the whole clip before it draws anything.
 
-70 looks out of the box, and you can mix them together. mess around and have fun.
+80 looks out of the box, and you can mix them together. mess around and have fun.
 
 windows only for now, on any gpu with dx12.
 

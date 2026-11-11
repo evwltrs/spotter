@@ -3657,7 +3657,7 @@ dependencies = [
 
 [[package]]
 name = "spotter"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -3668,7 +3668,7 @@ dependencies = [
 
 [[package]]
 name = "spotter-app"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "cpal",
@@ -3683,7 +3683,7 @@ dependencies = [
 
 [[package]]
 name = "spotter-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "ab_glyph",
  "anyhow",
@@ -5112,7 +5112,7 @@ checksum = "ec7a2a501ed189703dba8b08142f057e887dfc4b2cc4db2d343ac6376ba3e0b9"
 
 [[package]]
 name = "xtask"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "clap",
