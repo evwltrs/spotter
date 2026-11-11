@@ -5,6 +5,7 @@ b63ec8a23e3bc4ea  alone/blocks
 f5090a6935e6ca41  alone/bloom
 98f50f896fe7d969  alone/blueprint
 ec28891aabf2a91d  alone/broadcast
+4577e385d698253d  alone/burst
 4577e385d698253d  alone/captions
 2e91bf00a004eff4  alone/cctv
 996a64a2dc230a68  alone/census
@@ -30,6 +31,7 @@ cd5d71e0fb9022ce  alone/lock-on
 816a126058946b25  alone/marey
 04826e1b31a22fde  alone/melt
 4577e385d698253d  alone/mosh beats
+4577e385d698253d  alone/needles
 32952ced3a1bd872  alone/neon
 dbb3fe8c9b2ea899  alone/network
 305b5b9112568fc7  alone/night ops
@@ -47,10 +49,14 @@ e96d6bef3d06a77b  alone/redact
 1ae904226571b2c9  alone/riso
 4cb54b7d406abd97  alone/sketch
 705d778de6789865  alone/skip
+4577e385d698253d  alone/slip
 73ebd01ae2371b2a  alone/slitscan
 57a0b97de7f656a5  alone/smoke
 613fb0e38214e378  alone/sonar
 d9ba412bc978d34c  alone/sounding
+4577e385d698253d  alone/splat rot
+4577e385d698253d  alone/splatmosh
+4577e385d698253d  alone/splats
 7d96eabc0ccc0b21  alone/spotlight
 2fac5a220a9a20ba  alone/sprawl
 728583a90b3d4839  alone/stars
@@ -86,6 +92,7 @@ ca9b821e769204c6  taped/blocks
 5d56ed55e2637ac3  taped/bloom
 793192eac6cfa51d  taped/blueprint
 bbc042c86fd1650a  taped/broadcast
+4577e385d698253d  taped/burst
 180c992a4126da9f  taped/captions
 1666aa744630aeba  taped/cctv
 2a38b5c36ea80960  taped/census
@@ -111,6 +118,7 @@ a41e36e72dd346a3  taped/manifest
 b0ac2c6fdddb3e36  taped/marey
 930d0326a71c6df2  taped/melt
 4577e385d698253d  taped/mosh beats
+4577e385d698253d  taped/needles
 8c72919231e4b1a9  taped/neon
 2701a17de63a1cd7  taped/network
 f4e70a81a9888346  taped/night ops
@@ -128,10 +136,14 @@ b757c2e5ea89f9d8  taped/redact
 a94c3406f4ceb989  taped/riso
 67c99c605026bc80  taped/sketch
 b0665e17c9f8a6ce  taped/skip
+4577e385d698253d  taped/slip
 de8a215c8940eb53  taped/slitscan
 ad5916ceda17be02  taped/smoke
 6f17cb2ad8e99d90  taped/sonar
 d0452f2c5186b23a  taped/sounding
+4577e385d698253d  taped/splat rot
+4577e385d698253d  taped/splatmosh
+4577e385d698253d  taped/splats
 c4fe453dba039ea7  taped/spotlight
 df46d44ce06d4b0d  taped/sprawl
 728583a90b3d4839  taped/stars

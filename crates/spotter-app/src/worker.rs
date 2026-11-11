@@ -371,6 +371,8 @@ struct Worker {
 	depths: Option<Receiver<Result<spotter_core::depth::Depther, String>>>,
 	/// SegFormer, being set up for the words look
 	scenes: Option<Receiver<Result<spotter_core::scene::Scener, String>>>,
+	/// what draws splats, being set up for a look that has them
+	splatters: Option<Receiver<Result<spotter_core::splat::Splatter, String>>>,
 	window: Option<Window>,
 	aim: Option<spotter_core::Rect>,
 	seen: Frame,
@@ -496,6 +498,7 @@ pub fn spawn(
 				outlines: None,
 				depths: None,
 				scenes: None,
+				splatters: None,
 				window: None,
 				aim: None,
 				seen: Frame::default(),
@@ -630,6 +633,7 @@ impl Worker {
 		self.take_outliner();
 		self.take_depther();
 		self.take_scener();
+		self.take_splatter();
 		lap.mark("loop: models");
 		self.take_ahead();
 		lap.mark("loop: look ahead");
@@ -901,6 +905,17 @@ impl Worker {
 		}
 	}
 
+	fn take_splatter(&mut self) {
+		match arrived(&mut self.splatters) {
+			Some(Ok(s)) => {
+				self.engine.splatter = Some(s);
+				self.dirty = true;
+			}
+			Some(Err(e)) => self.status.error = Some(format!("no splats ({e})")),
+			None => {}
+		}
+	}
+
 	fn take_depther(&mut self) {
 		match arrived(&mut self.depths) {
 			Some(Ok(d)) => {
@@ -1020,7 +1035,7 @@ impl Worker {
 						.expect("a thread to set up the outliner");
 					self.outlines = Some(orx);
 				}
-				if l.either(spotter_core::depth::active) && self.engine.depther.is_none() && self.depths.is_none() {
+				if l.either(spotter_core::depth::wanted) && self.engine.depther.is_none() && self.depths.is_none() {
 					let (dtx, drx) = channel();
 					std::thread::Builder::new()
 						.name("depth setup".into())
@@ -1032,6 +1047,16 @@ impl Worker {
 						})
 						.expect("a thread to set up depth");
 					self.depths = Some(drx);
+				}
+				if l.either(spotter_core::splat::active) && self.engine.splatter.is_none() && self.splatters.is_none() {
+					let (stx, srx) = channel();
+					std::thread::Builder::new()
+						.name("splats setup".into())
+						.spawn(move || {
+							let _ = stx.send(spotter_core::splat::Splatter::new().map_err(|e| format!("{e:#}")));
+						})
+						.expect("a thread to set up splats");
+					self.splatters = Some(srx);
 				}
 				// slowed down and smooth: RIFE, to make the frames between
 				if l.smooth_slow && l.speed < 0.99 && self.tween.is_none() && self.tweens.is_none() {

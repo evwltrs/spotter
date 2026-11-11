@@ -24,3 +24,6 @@ ab_glyph.workspace = true
 ort.workspace = true
 prost = "0.14.5"
 hmac-sha256 = "1.1.15"
+wgpu.workspace = true
+bytemuck.workspace = true
+pollster.workspace = true

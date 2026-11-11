@@ -237,12 +237,18 @@ pub fn run(e: &Export, progress: &mut dyn FnMut(u64, u64) -> bool) -> Result<Pla
 			best("outlines", e.fast, |i| crate::outline::Outliner::load(crate::outline::MODELS[i], e.device, true))
 		})
 		.flatten();
-	let mut depther = (e.look.either(crate::depth::active) && gpu_on)
+	let mut depther = (e.look.either(crate::depth::wanted) && gpu_on)
 		.then(|| best("depth", e.fast, |i| crate::depth::Depther::load(crate::depth::MODELS[i], e.device, true)))
 		.flatten();
 	// SegFormer, for the words look's world
 	let mut scener = (e.look.either(crate::scene::active) && gpu_on)
 		.then(|| best("scene", e.fast, |i| crate::scene::Scener::load(crate::scene::MODELS[i], e.device, true)))
+		.flatten();
+	// splats are drawn by wgpu, on the GPU whatever runs the models
+	let mut splatter = e
+		.look
+		.either(crate::splat::active)
+		.then(|| crate::splat::Splatter::new().map_err(|err| eprintln!("no splats ({err:#})")).ok())
 		.flatten();
 	let open_at = |a: f64, b: f64, w: u32, h: u32, crop: Option<[u32; 4]>| {
 		Decoder::open(
@@ -466,6 +472,7 @@ pub fn run(e: &Export, progress: &mut dyn FnMut(u64, u64) -> bool) -> Result<Pla
 	engine.outliner = outliner.take();
 	engine.depther = depther.take();
 	engine.scener = scener.take();
+	engine.splatter = splatter.take();
 	// two looks mixed: the models' answers for one are kept for the other on the same frame
 	if !e.look.mix.trim().is_empty() {
 		engine.recall = Some(crate::recall::Recall::small());

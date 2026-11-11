@@ -25,6 +25,11 @@ pub fn active(l: &Look) -> bool {
 	l.depth != "off" && !l.depth.is_empty()
 }
 
+/// Whether the look needs depth worked out: for what depth does itself, or to place splats.
+pub fn wanted(l: &Look) -> bool {
+	active(l) || crate::splat::active(l)
+}
+
 pub struct Depther {
 	/// none in a shell: the window's copy that draws with what the models' thread found
 	model: Option<Model>,
@@ -170,6 +175,11 @@ impl Depther {
 		self.near.extend(d.iter().map(|v| ((v - lo) / span).clamp(0.0, 1.0)));
 		self.ms = t0.elapsed().as_secs_f32() * 1000.0;
 		Ok(())
+	}
+
+	/// Nearness at an output pixel of a w by h frame, 0 far to 1 near, once it's been worked out.
+	pub fn near_at(&self, x: usize, y: usize, w: usize, h: usize) -> Option<f32> {
+		(self.near.len() == self.size * self.size).then(|| self.at(x, y, w, h))
 	}
 
 	/// Nearness at an output pixel of a w by h frame.

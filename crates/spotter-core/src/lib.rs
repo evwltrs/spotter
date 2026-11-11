@@ -33,6 +33,7 @@ pub mod recall;
 pub mod scene;
 pub mod songs;
 pub mod sources;
+pub mod splat;
 pub mod subject;
 pub mod tape;
 pub mod text;

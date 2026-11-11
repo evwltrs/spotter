@@ -14,6 +14,10 @@ anyhow = "1.0.104"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1.0.154", features = ["preserve_order"] }
 rayon = "1.12.0"
+# the same wgpu rune draws the window with, on DX12 (Vulkan or Metal elsewhere): splat.rs draws with it
+wgpu = { version = "30.0.1", default-features = false, features = ["std", "parking_lot", "wgsl", "dx12", "vulkan", "metal"] }
+bytemuck = { version = "1.25.2", features = ["derive"] }
+pollster = "1.0.1"
 tiny-skia = "0.12.0"
 ab_glyph = "0.2.32"
 clap = { version = "4.6.7", features = ["derive"] }

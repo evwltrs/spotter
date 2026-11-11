@@ -121,6 +121,8 @@ pub struct Engine {
 	pub depther: Option<crate::depth::Depther>,
 	/// what each part of the scene is, for the words look
 	pub scener: Option<crate::scene::Scener>,
+	/// draws gaussian splats on the GPU (lent to a look mixed in, as the models are)
+	pub splatter: Option<crate::splat::Splatter>,
 	/// what those three said about each frame, kept to play it again without them (the window's)
 	pub recall: Option<crate::recall::Recall>,
 	/// the window's: those three on a thread of their own (background.rs), the last of its answers
@@ -193,6 +195,8 @@ pub struct Engine {
 	mix_matte: Option<Matte>,
 	/// datamosh, tape tears, trichrome and stutter, and whether a beat came this frame (None: no beats)
 	glitch: crate::glitch::Glitch,
+	/// the splats kept from frame to frame
+	splats: crate::splat::Cloud,
 	beat_hit: Option<bool>,
 	/// drawing only the marks (boxes, labels, text, insets) onto a picture that's already made: the
 	/// other look's, for mixing over or under
@@ -211,6 +215,7 @@ impl Engine {
 			outliner: None,
 			depther: None,
 			scener: None,
+			splatter: None,
 			recall: None,
 			background: None,
 			bg_seen: 0,
@@ -251,6 +256,7 @@ impl Engine {
 			with_frame: Frame::default(),
 			mix_matte: None,
 			glitch: Default::default(),
+			splats: Default::default(),
 			beat_hit: None,
 			marks_only: false,
 		}
@@ -259,6 +265,7 @@ impl Engine {
 	/// The picture jumped (a seek, a new video): the last frame means nothing now.
 	pub fn jumped(&mut self) {
 		self.glitch.jumped();
+		self.splats.clear();
 		self.finder.reset();
 		self.follow.clear();
 		self.objects.clear();
@@ -447,9 +454,11 @@ impl Engine {
 		}
 		self.glitch.jumped();
 		self.echo.clear();
+		self.splats.clear();
 		if let Some(w) = self.with.as_mut() {
 			w.glitch.jumped();
 			w.echo.clear();
+			w.splats.clear();
 		}
 	}
 
@@ -710,6 +719,7 @@ impl Engine {
 		std::mem::swap(&mut self.outliner, &mut w.outliner);
 		std::mem::swap(&mut self.depther, &mut w.depther);
 		std::mem::swap(&mut self.scener, &mut w.scener);
+		std::mem::swap(&mut self.splatter, &mut w.splatter);
 		std::mem::swap(&mut self.recall, &mut w.recall);
 		std::mem::swap(&mut self.detector, &mut w.detector);
 		std::mem::swap(&mut self.background, &mut w.background);
@@ -732,6 +742,7 @@ impl Engine {
 		std::mem::swap(&mut self.outliner, &mut w.outliner);
 		std::mem::swap(&mut self.depther, &mut w.depther);
 		std::mem::swap(&mut self.scener, &mut w.scener);
+		std::mem::swap(&mut self.splatter, &mut w.splatter);
 		std::mem::swap(&mut self.recall, &mut w.recall);
 		std::mem::swap(&mut self.detector, &mut w.detector);
 		std::mem::swap(&mut self.background, &mut w.background);
@@ -986,7 +997,7 @@ impl Engine {
 		// what's wanted of the window's models this frame (depth, the scene)
 		let mut want = (false, false);
 		// depth: worked out on each new frame (used once the layers are done)
-		if crate::depth::active(l)
+		if crate::depth::wanted(l)
 			&& !self.marks_only
 			&& self.fresh_frame
 			&& let Some(d) = self.depther.as_mut()
@@ -1216,6 +1227,19 @@ impl Engine {
 			d.apply(out, l, self.t);
 		}
 		lap.mark("depth drawing");
+		// splats: the picture so far made again from them, bent, through a camera swinging round
+		if crate::splat::active(l)
+			&& !self.marks_only
+			&& let Some(s) = self.splatter.as_mut()
+		{
+			let since = since_burst(beats.as_deref(), self.t, l.splat_speed);
+			let dt = 1.0 / self.fps.max(1.0);
+			let depth = self.depther.as_ref();
+			if let Err(e) = self.splats.draw(s, out, depth, l, self.t, dt, since, self.fresh_frame) {
+				self.trouble = Some(format!("splats: {e:#}"));
+			}
+		}
+		lap.mark("splats");
 		if crate::glyphs::active(l) && !crate::glyphs::needs_matte(l) && !self.marks_only {
 			self.glyphs.draw(out, None, l);
 		}
@@ -1446,6 +1470,16 @@ impl Engine {
 			"date" => date(self.started + self.clock),
 			_ => return None,
 		})
+	}
+}
+
+/// Seconds since the last burst at source time `t`: the last of `beats` the look uses, or, without
+/// any, the last of one every `every` seconds.
+fn since_burst(beats: Option<&[f64]>, t: f64, every: f32) -> f32 {
+	match beats.and_then(|b| b.iter().rev().find(|&&x| x <= t)) {
+		Some(&b) => (t - b) as f32,
+		None if beats.is_some_and(|b| !b.is_empty()) => f32::INFINITY,
+		None => t.rem_euclid(every.max(0.5) as f64) as f32,
 	}
 }
 

@@ -122,6 +122,11 @@
 		"depthColor": "#fabd2f",
 		"depthLines": 16,
 		"depthSpeed": 4,
+		"splat": "off",
+		"splatSize": 6,
+		"splatAmount": 0.5,
+		"splatOrbit": 0.3,
+		"splatSpeed": 6,
 		"ahead": true,
 		"aheadSmooth": 0.04,
 		"sortLevel": 0.3,
@@ -1650,6 +1655,112 @@
 			"regionTemplate": "",
 			"kaleido": 6,
 			"kaleidoSpin": 2
+		},
+		"splats": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"splat": "paint",
+			"splatAmount": 0.7,
+			"splatOrbit": 0.45,
+			"splatSpeed": 8
+		},
+		"needles": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"splat": "needles",
+			"splatSize": 8,
+			"splatAmount": 0.35,
+			"splatOrbit": 0.25
+		},
+		"splat rot": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"splat": "bits",
+			"splatAmount": 0.6,
+			"splatOrbit": 0.15
+		},
+		"slip": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"splat": "slip",
+			"splatAmount": 0.6,
+			"splatOrbit": 0.2
+		},
+		"burst": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"splat": "burst",
+			"splatAmount": 0.8,
+			"splatOrbit": 0.2,
+			"splatSpeed": 3,
+			"beat": true
+		},
+		"splatmosh": {
+			"boxes": 0,
+			"labels": 0,
+			"linkMode": "off",
+			"patches": 0,
+			"points": 30,
+			"ownNumbers": true,
+			"font": "mono",
+			"regionStyle": "none",
+			"regionSpot": "above",
+			"hud": "",
+			"objects": 10,
+			"regionTemplate": "",
+			"splat": "smear",
+			"splatAmount": 0.6,
+			"splatOrbit": 0.3
 		}
 	},
 	"knobs": [
@@ -2757,6 +2868,58 @@
 					"hint": "seconds to sweep far to near and back",
 					"min": 0.5,
 					"max": 12,
+					"step": 0.5
+				}
+			]
+		},
+		{
+			"name": "splats",
+			"note": "the picture made again from soft 3D blobs (gaussian splats, drawn on the graphics card), placed by depth, and bent as a file is databent",
+			"knobs": [
+				{
+					"k": "splat",
+					"label": "splats",
+					"hint": "paint: just the blobs, stretched along the edges; needles: drawn out long and thin; bits: bits flipped in the blobs' numbers, in runs, so some swell, vanish or change colour; slip: bands of rows read from the wrong place; burst: blown at the camera on the beat (or every orbit time without music); smear: old blobs kept and swelling, only some made again each frame",
+					"options": [
+						"off",
+						"paint",
+						"needles",
+						"bits",
+						"slip",
+						"burst",
+						"smear"
+					]
+				},
+				{
+					"k": "splatSize",
+					"label": "size",
+					"hint": "how far apart the blobs are, in pixels of a 1080 picture: smaller is finer and slower",
+					"min": 2,
+					"max": 24,
+					"step": 1
+				},
+				{
+					"k": "splatAmount",
+					"label": "amount",
+					"hint": "paint: how far blobs stretch along edges; the rest: how much they're bent (smear: how long old blobs stay)",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "splatOrbit",
+					"label": "orbit",
+					"hint": "how far the camera swings round the blobs; with depth they part, near from far",
+					"min": 0,
+					"max": 1,
+					"step": 0.05
+				},
+				{
+					"k": "splatSpeed",
+					"label": "orbit time",
+					"hint": "seconds to swing round and back (and between bursts, without music)",
+					"min": 1,
+					"max": 20,
 					"step": 0.5
 				}
 			]
