@@ -1743,7 +1743,8 @@
 			"splatAmount": 0.8,
 			"splatOrbit": 0.2,
 			"splatSpeed": 3,
-			"beat": true
+			"beat": true,
+			"beatEvery": 4
 		},
 		"splatmosh": {
 			"boxes": 0,

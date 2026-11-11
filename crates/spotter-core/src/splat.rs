@@ -256,7 +256,7 @@ fn slip(g: &mut Grid, amount: f32, t: f64) {
 		}
 		let reach = (cols as f32 * 0.35 * amount * hash(b, tick * 8 + 1)) as isize + 1;
 		let m = if hash(b, tick * 8 + 2) < 0.5 { reach } else { -reach };
-		let out_of_step = hash(b, tick * 8 + 3) < (amount - 0.5).max(0.0) * 0.5;
+		let out_of_step = hash(b, tick * 8 + 3) < (amount - 0.5).max(0.0) * 0.25;
 		let k = 1 + (hash(b, tick * 8 + 4) * 10.0) as usize;
 		for (c, s) in line.iter_mut().enumerate() {
 			let at = |by: isize| &was[r * cols + (c as isize + by).rem_euclid(cols as isize) as usize];
@@ -278,9 +278,9 @@ fn slip(g: &mut Grid, amount: f32, t: f64) {
 	});
 }
 
-/// Blown out toward the camera, and outward from the middle, fading over half a second or so.
+/// Blown out toward the camera, and outward from the middle, fading over a third of a second or so.
 fn burst(g: &mut Grid, amount: f32, since: f32) {
-	let k = amount * (-since.max(0.0) / 0.45).exp();
+	let k = amount * (-since.max(0.0) / 0.35).exp();
 	if k < 0.002 {
 		return;
 	}

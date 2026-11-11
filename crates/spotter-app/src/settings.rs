@@ -22,6 +22,7 @@ pub(crate) fn masters(group: &str) -> &'static [&'static str] {
 		"insets" => &["insets"],
 		"glyphs" => &["glyphs"],
 		"depth" => &["depth"],
+		"splats" => &["splat"],
 		"camera" => &["follow"],
 		"reveal" => &["reveal"],
 		"mix" => &["mix"],
