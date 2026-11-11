@@ -55,7 +55,10 @@ pub(crate) const FAMILIES: &[(&str, &[&str])] = &[
 		],
 	),
 	("depth", &["rack focus", "sounding", "contours", "haze"]),
-	("splats", &["splats", "needles", "splat rot", "slip", "burst", "splatmosh"]),
+	(
+		"splats",
+		&["splats", "bokeh", "voxels", "relief", "equalizer", "pixels", "pixel rot", "shatter", "slip", "voxel mosh"],
+	),
 	("signal", &["sonar", "pulse", "night ops", "plates"]),
 	("ahead", &["foresight", "trajectory"]),
 ];

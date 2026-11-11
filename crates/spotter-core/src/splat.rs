@@ -1,42 +1,61 @@
-//! Gaussian splats: the picture lifted into a cloud of soft 3D blobs, one to each little square of
-//! it (its colour, stretched along the edge in it, as far away as depth says), and drawn again
-//! through a camera that swings round them, on the GPU with wgpu. Each blob is a Gaussian, drawn
-//! the way 3D Gaussian splatting draws them (splat.wgsl): projected, sorted far to near, and laid
-//! over each other. Then the blobs are bent as a file is databent:
+//! Splats: the picture lifted into a cloud of 3D shapes, one to each little square of it (its colour,
+//! as far away as depth or its brightness says), and drawn again through a camera that swings round
+//! them, on the GPU with wgpu (splat.wgsl). The shapes:
 //!
-//! - paint: only the blobs, soft strokes along the picture's edges;
-//! - needles: each one drawn out long and thin along its edge;
-//! - bits: bits flipped in the blobs' numbers as they're kept (32-bit floats), in runs, as a damaged
-//!   file has them, so some swell, some vanish and some change colour;
-//! - slip: bands of rows read from the wrong place, each blob's colour, shape and depth taken from
-//!   others along its row, and (past half) a few bands read some numbers out of step, so where a
-//!   blob is comes from another's colour;
+//! - soft: Gaussians, drawn the way 3D Gaussian splatting draws them (projected, sorted far to near
+//!   and laid over each other), stretched along the picture's edges;
+//! - glow: discs, as a lens draws what's out of focus, added up like light rather than laid over, the
+//!   bright far more than the dark, so highlights burn white and shadows sink;
+//! - pixel: hard squares with gaps between, an LED wall coming apart in depth;
+//! - voxel: blocks on terraces of depth, each running back as far as its farthest neighbour (a step in
+//!   depth is a wall), lit by side and outlined, so the picture becomes a landscape of blocks.
+//!
+//! Where each goes in depth: the depth model's guess, how bright it is (bright comes forward, or dark
+//! does), or nowhere (flat, and the camera tilts it); `splat_depth` deepens it. Then the cloud is bent
+//! as a file is databent:
+//!
+//! - wave: a ripple running out through its depth from the middle, swelling on each beat;
+//! - bits: bits flipped in the shapes' numbers as they're kept (32-bit floats), in runs, as a damaged
+//!   file has them, so some swell, some vanish, some jump and some change colour;
+//! - slip: bands of rows read from the wrong place, colour, size and depth taken from others along the
+//!   row, and past half a few bands read some numbers out of step;
 //! - burst: blown out toward the camera on the beat (or every few seconds without one);
-//! - smear: blobs kept from the frames before rather than made again, only some fresh each frame and
-//!   the old ones swelling, so what moves leaves itself behind (a datamosh of blobs).
-//!
-//! Without depth (no model yet, or none on this computer) the cloud is flat, and the camera tilts it.
+//! - smear: shapes kept from the frames before rather than made again, only some fresh each frame and
+//!   the old ones swelling, so what moves leaves itself behind (a datamosh of shapes).
 
 use crate::Frame;
 use crate::depth::Depther;
 use crate::look::Look;
+use crate::overlay::colour;
 use crate::tracking::hash;
 use anyhow::{Context, Result, anyhow, bail};
 use rayon::prelude::*;
+use std::f32::consts::{FRAC_PI_2, PI, TAU};
 use std::sync::{Arc, OnceLock};
 use std::time::{Duration, Instant};
 
 /// the camera's focal length, in halves of the picture's height
 const FOCAL: f32 = 1.4;
-/// how far away the nearest and farthest splats are, and every one with no depth
-const NEAREST: f32 = 0.6;
-const FARTHEST: f32 = 2.6;
+/// how far away a flat cloud is; how far apart the nearest and farthest are (as one over the
+/// distance) at depth 1; the farthest any may be put
 const FLAT: f32 = 1.0;
-/// what the camera turns round, and the nearest it draws
-const PIVOT: f32 = 1.2;
+const SPREAD: f32 = 1.3;
+const FARTHEST: f32 = 6.0;
+/// what the camera turns round, the most it swings either way (radians), and its near and far planes
+const PIVOT: f32 = 1.1;
+const SWING: f32 = 0.35;
 const CLIP: f32 = 0.05;
-/// how far a splat spreads, as a part of the gap between them, so neighbours overlap and cover
+const FAR: f32 = 100.0;
+/// how far a soft splat spreads, as a part of the gap between them, so neighbours overlap and cover,
+/// and how much further a glowing one does
 const SOFT: f32 = 0.72;
+const GLOW: f32 = 1.5;
+/// how much of its square a pixel fills (the rest is gap) and a voxel; how many terraces of depth
+/// voxels stand on; the furthest back a voxel runs, as a part of its distance
+const PIXEL_FILL: f32 = 0.84;
+const VOXEL_FILL: f32 = 1.0;
+const TERRACES: f32 = 12.0;
+const WALL: f32 = 0.3;
 /// how solid a splat is at its middle, and how thick, as a part of its smaller size
 const SOLID: f32 = 0.99;
 const THIN: f32 = 0.25;
@@ -44,7 +63,7 @@ const THIN: f32 = 0.25;
 /// of a flat cloud)
 const BIGGEST: f32 = 0.12;
 const REACH: f32 = 40.0;
-/// the most a splat may spread on the picture, as a part of its longer side
+/// the most a soft splat may spread on the picture, as a part of its longer side
 const WIDEST: f32 = 0.15;
 /// how long the GPU may take over a frame before it's given up on
 const PATIENCE: Duration = Duration::from_secs(10);
@@ -53,13 +72,43 @@ pub fn active(l: &Look) -> bool {
 	l.splat != "off" && !l.splat.is_empty()
 }
 
-/// One Gaussian, as the GPU reads it (three vec4s).
+/// Whether the look's splats are placed by the depth model.
+pub fn wants_depth(l: &Look) -> bool {
+	active(l) && l.splat_relief == "depth"
+}
+
+/// What each splat is drawn as.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Shape {
+	Soft,
+	Glow,
+	Pixel,
+	Voxel,
+}
+
+impl Shape {
+	pub fn of(l: &Look) -> Shape {
+		match l.splat_shape.as_str() {
+			"glow" => Shape::Glow,
+			"pixel" => Shape::Pixel,
+			"voxel" => Shape::Voxel,
+			_ => Shape::Soft,
+		}
+	}
+
+	/// Drawn solid, through a depth buffer, rather than see-through.
+	fn hard(self) -> bool {
+		matches!(self, Shape::Pixel | Shape::Voxel)
+	}
+}
+
+/// One splat, as the GPU reads it (three vec4s).
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
 pub struct Splat {
 	/// where it is: x right, y down, z away from the camera
 	pub pos: [f32; 3],
-	/// how solid it is at its middle, 0-1
+	/// how solid it is at its middle, 0-1 (a pixel or a voxel under a half isn't drawn)
 	pub alpha: f32,
 	/// its standard deviations along its two axes, the first's angle in the picture's plane, and its
 	/// thickness, as a part of the smaller
@@ -94,19 +143,27 @@ fn cell(c: usize, r: usize) -> i64 {
 	(r * 8192 + c) as i64
 }
 
-/// How far away something is, from depth's nearness (0 far to 1 near).
-fn distance(near: f32) -> f32 {
-	1.0 / (1.0 / FARTHEST + (1.0 / NEAREST - 1.0 / FARTHEST) * near.clamp(0.0, 1.0))
+/// How far away something `near` (0 far to 1 near) is, in a cloud `deep` deep (0 flat).
+fn distance(near: f32, deep: f32) -> f32 {
+	1.0 / (1.0 + (near.clamp(0.0, 1.0) - 0.5) * SPREAD * deep.max(0.0)).max(1.0 / FARTHEST)
 }
 
-/// Splats for `frame`: each square's colour, stretched along the edge in it by `stretch` (0 round, 1
-/// the most), as near as `depth` has it (flat without).
-pub fn build(frame: &Frame, depth: Option<&Depther>, size: f32, stretch: f32) -> Grid {
+/// Splats for `frame`, as `l` makes them, placed by `depth` if it wants depth and there's any.
+pub fn build(frame: &Frame, depth: Option<&Depther>, l: &Look) -> Grid {
 	let (w, h) = (frame.w as usize, frame.h as usize);
 	if w == 0 || h == 0 {
 		return Grid::default();
 	}
-	let (cols, rows) = grid(frame.w, frame.h, size);
+	let shape = Shape::of(l);
+	// soft ones stretch along edges (as far as the look says, left alone); hard ones are square
+	let stretch = match shape {
+		Shape::Pixel | Shape::Voxel => 0.0,
+		_ if l.splat == "plain" => l.splat_amount.clamp(0.0, 1.0),
+		_ => 0.6,
+	};
+	let spread = SOFT * if shape == Shape::Glow { GLOW } else { 1.0 };
+	let deep = l.splat_depth.clamp(0.0, 1.5);
+	let (cols, rows) = grid(frame.w, frame.h, l.splat_size);
 	let (gx, gy) = (w as f32 / cols as f32, h as f32 / rows as f32);
 	let half = h as f32 / 2.0;
 	let px = &frame.rgba;
@@ -114,7 +171,6 @@ pub fn build(frame: &Frame, depth: Option<&Depther>, size: f32, stretch: f32) ->
 		let p = &px[(y * w + x) * 4..];
 		(p[0] as f32 * 0.2126 + p[1] as f32 * 0.7152 + p[2] as f32 * 0.0722) / 255.0
 	};
-	let stretch = stretch.clamp(0.0, 1.0);
 	let mut splats = vec![Splat::default(); cols * rows];
 	splats.par_chunks_mut(cols).enumerate().for_each(|(r, line)| {
 		let y0 = ((r as f32 * gy) as usize).min(h - 1);
@@ -133,40 +189,52 @@ pub fn build(frame: &Frame, depth: Option<&Depther>, size: f32, stretch: f32) ->
 					sum[1] += p[1] as f32;
 					sum[2] += p[2] as f32;
 					n += 1.0;
-					let dx = lum((x + 1).min(w - 1), y) - lum(x.saturating_sub(1), y);
-					let dy = lum(x, (y + 1).min(h - 1)) - lum(x, y.saturating_sub(1));
-					jxx += dx * dx;
-					jxy += dx * dy;
-					jyy += dy * dy;
+					if stretch > 0.0 {
+						let dx = lum((x + 1).min(w - 1), y) - lum(x.saturating_sub(1), y);
+						let dy = lum(x, (y + 1).min(h - 1)) - lum(x, y.saturating_sub(1));
+						jxx += dx * dx;
+						jxy += dx * dy;
+						jyy += dy * dy;
+					}
 				}
 			}
+			let colour = [sum[0] / n / 255.0, sum[1] / n / 255.0, sum[2] / n / 255.0, 1.0];
 			let id = cell(c, r);
 			// the edge runs across the gradient, and how sure that is says how far it's stretched;
-			// where there's no edge it lies any way at all
+			// where there's no edge a soft one lies any way at all, and a hard one square
 			let diff = jxx - jyy;
 			let sure = if jxx + jyy > 1e-6 { (diff * diff + 4.0 * jxy * jxy).sqrt() / (jxx + jyy) } else { 0.0 };
-			let along = if sure > 0.05 {
-				0.5 * (2.0 * jxy).atan2(diff) + std::f32::consts::FRAC_PI_2
+			let along = if shape.hard() {
+				0.0
+			} else if sure > 0.05 {
+				0.5 * (2.0 * jxy).atan2(diff) + FRAC_PI_2
 			} else {
-				hash(id, 13) * std::f32::consts::PI
+				hash(id, 13) * PI
 			};
 			let k = stretch * sure;
-			// a little off the grid, so the grid doesn't show
-			let cx = (c as f32 + 0.5 + (hash(id, 11) - 0.5) * 0.5) * gx;
-			let cy = (r as f32 + 0.5 + (hash(id, 12) - 0.5) * 0.5) * gy;
-			let z = depth
-				.and_then(|d| d.near_at((cx as usize).min(w - 1), (cy as usize).min(h - 1), w, h))
-				.map_or(FLAT, distance);
+			// soft ones a little off the grid, so it doesn't show; hard ones on it
+			let jitter = if shape.hard() { 0.0 } else { 0.5 };
+			let cx = (c as f32 + 0.5 + (hash(id, 11) - 0.5) * jitter) * gx;
+			let cy = (r as f32 + 0.5 + (hash(id, 12) - 0.5) * jitter) * gy;
+			let light = colour[0] * 0.2126 + colour[1] * 0.7152 + colour[2] * 0.0722;
+			let near = match l.splat_relief.as_str() {
+				"light" => Some(light),
+				"dark" => Some(1.0 - light),
+				"flat" => None,
+				_ => depth.and_then(|d| d.near_at((cx as usize).min(w - 1), (cy as usize).min(h - 1), w, h)),
+			};
+			let near = if shape == Shape::Voxel { near.map(|n| (n * TERRACES).round() / TERRACES) } else { near };
+			let z = near.map_or(FLAT, |n| distance(n, deep));
 			// the cloud's units to a pixel, this far away
 			let unit = z / FOCAL / half;
-			let sigma = SOFT * 0.5 * (gx + gy) * unit;
+			let sigma = spread * 0.5 * (gx + gy) * unit;
 			*s = Splat {
 				pos: [(cx - w as f32 / 2.0) * unit, (cy - half) * unit, z],
 				alpha: SOLID,
 				scale: [sigma * (1.0 + 1.2 * k), sigma * (1.0 - 0.4 * k)],
 				angle: along,
 				thin: THIN,
-				colour: [sum[0] / n / 255.0, sum[1] / n / 255.0, sum[2] / n / 255.0, 1.0],
+				colour,
 			};
 		}
 	});
@@ -191,20 +259,37 @@ fn sane(s: &mut Splat) {
 	}
 }
 
-/// What the look does to its splats. `t` is the source's time; `since` seconds since the last burst.
+/// What the look does to its splats. `t` is the source's time; `since` seconds since the last beat
+/// (or burst time).
 pub fn bend(g: &mut Grid, l: &Look, t: f64, since: f32) {
 	let amount = l.splat_amount.clamp(0.0, 1.0);
 	match l.splat.as_str() {
-		"needles" => g.splats.par_iter_mut().for_each(|s| {
-			s.scale[0] *= 1.0 + 9.0 * amount;
-			s.scale[1] *= 1.0 - 0.7 * amount;
-		}),
+		"wave" => wave(g, amount, t, since),
 		"bits" => bits(g, amount, t),
 		"slip" => slip(g, amount, t),
 		"burst" => burst(g, amount, since),
 		_ => {}
 	}
 	g.splats.par_iter_mut().for_each(sane);
+}
+
+/// A ripple running out from the middle through the cloud's depth (two rings across the picture),
+/// stronger for a moment after each beat. Each keeps its place on the picture, so nearer is bigger.
+fn wave(g: &mut Grid, amount: f32, t: f64, since: f32) {
+	let (cols, rows) = (g.cols.max(1), g.rows.max(1));
+	let aspect = cols as f32 / rows as f32;
+	let swell = 0.4 + 0.6 * (-since.max(0.0) / 0.4).exp();
+	let amp = amount * 0.5 * swell;
+	let phase = (t * 0.8).fract() as f32;
+	g.splats.par_iter_mut().enumerate().for_each(|(i, s)| {
+		let u = ((i % cols) as f32 + 0.5) / cols as f32 - 0.5;
+		let v = ((i / cols) as f32 + 0.5) / rows as f32 - 0.5;
+		let d = ((u * aspect).powi(2) + v * v).sqrt();
+		let z = s.pos[2].max(CLIP);
+		let nz = (z * (1.0 - amp * ((d * 2.0 - phase) * TAU).sin())).max(2.0 * CLIP);
+		let f = nz / z;
+		s.pos = [s.pos[0] * f, s.pos[1] * f, nz];
+	});
 }
 
 /// how many splats are in a run of bits
@@ -297,26 +382,48 @@ fn burst(g: &mut Grid, amount: f32, since: f32) {
 	});
 }
 
-/// Where the camera is: turned round a point in the cloud, swinging as the look says.
+/// How far back each voxel runs (kept in its thickness): to the farthest of its neighbours, so a step
+/// in depth is a wall rather than a gap, but no more than `WALL` of its distance, so the biggest steps
+/// are slabs floating in front rather than walls to the back of the cloud.
+fn walls(g: &mut Grid) {
+	let cols = g.cols.max(1);
+	let z: Vec<f32> = g.splats.iter().map(|s| s.pos[2]).collect();
+	g.splats.par_iter_mut().enumerate().for_each(|(i, s)| {
+		let (c, r) = (i % cols, i / cols);
+		let mut far = z[i];
+		for (ok, j) in
+			[(c > 0, i.wrapping_sub(1)), (c + 1 < cols, i + 1), (r > 0, i.wrapping_sub(cols)), (true, i + cols)]
+		{
+			if ok && let Some(&v) = z.get(j) {
+				far = far.max(v);
+			}
+		}
+		s.thin = (far - z[i]).min(WALL * z[i].max(CLIP));
+	});
+}
+
+/// Where the camera is: turned round a point in the cloud, swinging as the look says, and drawn in a
+/// little as it swings so less of the cloud's edge shows.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Camera {
 	/// the turn, by rows
 	pub turn: [[f32; 3]; 3],
 	pub w: u32,
 	pub h: u32,
+	pub zoom: f32,
 }
 
 impl Camera {
 	/// Swinging side to side and a little up and down (a figure of eight), `splat_orbit` of the most,
 	/// round and back every `splat_speed` seconds.
 	pub fn orbit(l: &Look, t: f64, w: u32, h: u32) -> Camera {
-		let swing = l.splat_orbit.clamp(0.0, 1.0) * 0.26;
+		let most = l.splat_orbit.clamp(0.0, 1.0) * SWING;
 		let phase = ((t / l.splat_speed.max(0.5) as f64).fract() * std::f64::consts::TAU) as f32;
-		let (ay, ax) = (swing * phase.sin(), swing * 0.45 * (2.0 * phase + 0.6).sin());
+		let (ay, ax) = (most * phase.sin(), most * 0.45 * (2.0 * phase + 0.6).sin());
 		let (sy, cy, sx, cx) = (ay.sin(), ay.cos(), ax.sin(), ax.cos());
 		// turned about y, then about x
 		let turn = [[cy, 0.0, sy], [sx * sy, cx, -sx * cy], [-cx * sy, sx, cx * cy]];
-		Camera { turn, w, h }
+		Camera { turn, w, h, zoom: 1.0 + 0.5 * most }
 	}
 
 	/// How far a splat is from the camera, along its view.
@@ -325,17 +432,22 @@ impl Camera {
 		r[0] * p[0] + r[1] * p[1] + r[2] * (p[2] - PIVOT) + PIVOT
 	}
 
-	fn uniform(&self) -> Uniform {
+	fn uniform(&self, shape: Shape) -> Uniform {
 		let t = self.turn;
 		let col = |c: usize| [t[0][c], t[1][c], t[2][c], 0.0];
 		let (w, h) = (self.w as f32, self.h as f32);
 		let widest = WIDEST * w.max(h) / 3.0;
+		let fill = if shape == Shape::Voxel { VOXEL_FILL } else { PIXEL_FILL };
+		// glow's gain: white where it's even comes out twice as bright, a mid grey as it was (each disc
+		// covers about 1.65 standard deviations round)
+		let glow = 2.0 / (PI * (1.65 * SOFT * GLOW).powi(2));
 		Uniform {
 			r0: col(0),
 			r1: col(1),
 			r2: col(2),
-			pivot: [0.0, 0.0, PIVOT, FOCAL * h / 2.0],
+			pivot: [0.0, 0.0, PIVOT, FOCAL * h / 2.0 * self.zoom],
 			view: [w, h, widest * widest, CLIP],
+			extra: [0.0, fill / (2.0 * SOFT), glow, FAR],
 		}
 	}
 }
@@ -349,6 +461,7 @@ struct Uniform {
 	r2: [f32; 4],
 	pivot: [f32; 4],
 	view: [f32; 4],
+	extra: [f32; 4],
 }
 
 /// The splats far to near as the camera sees them (at the same distance, in the order they were made,
@@ -357,6 +470,20 @@ pub fn sort(splats: &[Splat], cam: &Camera) -> Vec<Splat> {
 	let mut keyed: Vec<(f32, u32)> = splats.par_iter().enumerate().map(|(i, s)| (cam.depth(s.pos), i as u32)).collect();
 	keyed.par_sort_unstable_by(|a, b| b.0.total_cmp(&a.0).then(a.1.cmp(&b.1)));
 	keyed.par_iter().map(|&(_, i)| splats[i as usize]).collect()
+}
+
+/// How a frame's splats are drawn: their shape, and the colour behind them (0-1).
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Style {
+	pub shape: Shape,
+	pub back: [f64; 3],
+}
+
+impl Style {
+	pub fn of(l: &Look) -> Style {
+		let c = colour(&l.splat_back, 1.0);
+		Style { shape: Shape::of(l), back: [c.red() as f64, c.green() as f64, c.blue() as f64] }
+	}
 }
 
 /// What's kept of a look's splats from frame to frame (smear's), so it's the engine's, not the GPU's.
@@ -372,7 +499,7 @@ impl Cloud {
 
 	/// Draw `out` (the look so far) again as splats, bent as `l` says, with `depth` if there's any.
 	/// `t` is the source's time, `dt` the output's seconds a frame, `since` seconds since the last
-	/// burst; `fresh` false draws the same frame again.
+	/// beat (or burst time); `fresh` false draws the same frame again.
 	pub fn draw(
 		&mut self,
 		gpu: &mut Splatter,
@@ -384,25 +511,29 @@ impl Cloud {
 		since: f32,
 		fresh: bool,
 	) -> Result<()> {
-		let amount = l.splat_amount.clamp(0.0, 1.0);
-		let stretch = if l.splat == "paint" { amount } else { 0.6 };
 		let mut g = if l.splat == "smear" {
 			let (cols, rows) = grid(out.w, out.h, l.splat_size);
 			let same = self.held.cols == cols && self.held.rows == rows && !self.held.splats.is_empty();
 			if !same {
-				self.held = build(out, depth, l.splat_size, stretch);
+				self.held = build(out, depth, l);
 			} else if fresh {
-				let new = build(out, depth, l.splat_size, stretch);
-				self.smear(&new, amount, t, dt);
+				let new = build(out, depth, l);
+				self.smear(&new, l.splat_amount.clamp(0.0, 1.0), t, dt);
 			}
 			self.held.clone()
 		} else {
 			self.held = Grid::default();
-			build(out, depth, l.splat_size, stretch)
+			build(out, depth, l)
 		};
 		bend(&mut g, l, t, since);
+		let style = Style::of(l);
+		if style.shape == Shape::Voxel {
+			walls(&mut g);
+		}
 		let cam = Camera::orbit(l, t, out.w, out.h);
-		gpu.draw(&sort(&g.splats, &cam), &cam, out)
+		// only soft ones are laid over each other in order: glow adds up, hard ones have a depth buffer
+		let splats = if style.shape == Shape::Soft { sort(&g.splats, &cam) } else { g.splats };
+		gpu.draw(&splats, &cam, &style, out)
 	}
 
 	/// Some splats made again from `new`, the rest kept (and swelling) for about `0.15 + 2.85 *
@@ -455,11 +586,15 @@ fn open() -> Result<Gpu> {
 }
 
 const FORMAT: wgpu::TextureFormat = wgpu::TextureFormat::Rgba8Unorm;
+const DEPTH: wgpu::TextureFormat = wgpu::TextureFormat::Depth32Float;
 const ATTRIBUTES: [wgpu::VertexAttribute; 3] = wgpu::vertex_attr_array![0 => Float32x4, 1 => Float32x4, 2 => Float32x4];
 
 /// Draws splats on the GPU. It keeps no splats between frames, so it can be lent to a look mixed in.
 pub struct Splatter {
-	pipeline: wgpu::RenderPipeline,
+	soft: wgpu::RenderPipeline,
+	glow: wgpu::RenderPipeline,
+	pixel: wgpu::RenderPipeline,
+	voxel: wgpu::RenderPipeline,
 	group: wgpu::BindGroup,
 	camera: wgpu::Buffer,
 	/// the splats, and how many it has room for
@@ -470,21 +605,24 @@ pub struct Splatter {
 	pub ms: f32,
 }
 
-/// What a w by h picture is drawn into, and read back through (rows padded as copies want them).
+/// What a w by h picture is drawn into (with its depth, for hard shapes), and read back through (rows
+/// padded as copies want them).
 struct Target {
 	w: u32,
 	h: u32,
 	texture: wgpu::Texture,
 	view: wgpu::TextureView,
+	depth: wgpu::TextureView,
 	back: wgpu::Buffer,
 	row: u32,
 }
 
 impl Target {
 	fn new(d: &wgpu::Device, w: u32, h: u32) -> Target {
+		let size = wgpu::Extent3d { width: w, height: h, depth_or_array_layers: 1 };
 		let texture = d.create_texture(&wgpu::TextureDescriptor {
 			label: Some("splats"),
-			size: wgpu::Extent3d { width: w, height: h, depth_or_array_layers: 1 },
+			size,
 			mip_level_count: 1,
 			sample_count: 1,
 			dimension: wgpu::TextureDimension::D2,
@@ -492,7 +630,18 @@ impl Target {
 			usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::COPY_SRC,
 			view_formats: &[],
 		});
+		let depth = d.create_texture(&wgpu::TextureDescriptor {
+			label: Some("splats' depth"),
+			size,
+			mip_level_count: 1,
+			sample_count: 1,
+			dimension: wgpu::TextureDimension::D2,
+			format: DEPTH,
+			usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
+			view_formats: &[],
+		});
 		let view = texture.create_view(&Default::default());
+		let depth = depth.create_view(&Default::default());
 		let row = (w * 4).div_ceil(wgpu::COPY_BYTES_PER_ROW_ALIGNMENT) * wgpu::COPY_BYTES_PER_ROW_ALIGNMENT;
 		let back = d.create_buffer(&wgpu::BufferDescriptor {
 			label: Some("splats read back"),
@@ -500,7 +649,7 @@ impl Target {
 			usage: wgpu::BufferUsages::COPY_DST | wgpu::BufferUsages::MAP_READ,
 			mapped_at_creation: false,
 		});
-		Target { w, h, texture, view, back, row }
+		Target { w, h, texture, view, depth, back, row }
 	}
 }
 
@@ -513,35 +662,77 @@ impl Splatter {
 			label: Some("splats"),
 			source: wgpu::ShaderSource::Wgsl(include_str!("splat.wgsl").into()),
 		});
-		let pipeline = d.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-			label: Some("splats"),
-			layout: None,
-			vertex: wgpu::VertexState {
-				module: &shader,
-				entry_point: Some("vs"),
-				compilation_options: Default::default(),
-				buffers: &[Some(wgpu::VertexBufferLayout {
-					array_stride: std::mem::size_of::<Splat>() as u64,
-					step_mode: wgpu::VertexStepMode::Instance,
-					attributes: &ATTRIBUTES,
-				})],
-			},
-			primitive: wgpu::PrimitiveState { topology: wgpu::PrimitiveTopology::TriangleStrip, ..Default::default() },
-			depth_stencil: None,
-			multisample: Default::default(),
-			fragment: Some(wgpu::FragmentState {
-				module: &shader,
-				entry_point: Some("fs"),
-				compilation_options: Default::default(),
-				targets: &[Some(wgpu::ColorTargetState {
-					format: FORMAT,
-					blend: Some(wgpu::BlendState::PREMULTIPLIED_ALPHA_BLENDING),
-					write_mask: wgpu::ColorWrites::ALL,
-				})],
-			}),
-			multiview_mask: None,
-			cache: None,
+		let bind = d.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+			label: Some("splat camera"),
+			entries: &[wgpu::BindGroupLayoutEntry {
+				binding: 0,
+				visibility: wgpu::ShaderStages::VERTEX_FRAGMENT,
+				ty: wgpu::BindingType::Buffer {
+					ty: wgpu::BufferBindingType::Uniform,
+					has_dynamic_offset: false,
+					min_binding_size: None,
+				},
+				count: None,
+			}],
 		});
+		let layout = d.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+			label: Some("splats"),
+			bind_group_layouts: &[Some(&bind)],
+			immediate_size: 0,
+		});
+		let pipeline = |vs: &str, fs: &str, strip: bool, blend: Option<wgpu::BlendState>, solid: bool| {
+			d.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+				label: Some("splats"),
+				layout: Some(&layout),
+				vertex: wgpu::VertexState {
+					module: &shader,
+					entry_point: Some(vs),
+					compilation_options: Default::default(),
+					buffers: &[Some(wgpu::VertexBufferLayout {
+						array_stride: std::mem::size_of::<Splat>() as u64,
+						step_mode: wgpu::VertexStepMode::Instance,
+						attributes: &ATTRIBUTES,
+					})],
+				},
+				primitive: wgpu::PrimitiveState {
+					topology: if strip {
+						wgpu::PrimitiveTopology::TriangleStrip
+					} else {
+						wgpu::PrimitiveTopology::TriangleList
+					},
+					..Default::default()
+				},
+				depth_stencil: solid.then_some(wgpu::DepthStencilState {
+					format: DEPTH,
+					depth_write_enabled: Some(true),
+					depth_compare: Some(wgpu::CompareFunction::Less),
+					stencil: Default::default(),
+					bias: Default::default(),
+				}),
+				multisample: Default::default(),
+				fragment: Some(wgpu::FragmentState {
+					module: &shader,
+					entry_point: Some(fs),
+					compilation_options: Default::default(),
+					targets: &[Some(wgpu::ColorTargetState {
+						format: FORMAT,
+						blend,
+						write_mask: wgpu::ColorWrites::ALL,
+					})],
+				}),
+				multiview_mask: None,
+				cache: None,
+			})
+		};
+		let add = wgpu::BlendComponent {
+			src_factor: wgpu::BlendFactor::One,
+			dst_factor: wgpu::BlendFactor::One,
+			operation: wgpu::BlendOperation::Add,
+		};
+		let soft = pipeline("vs", "fs", true, Some(wgpu::BlendState::PREMULTIPLIED_ALPHA_BLENDING), false);
+		let glow = pipeline("vs", "fs_glow", true, Some(wgpu::BlendState { color: add, alpha: add }), false);
+		let pixel = pipeline("vs_pixel", "fs_hard", true, None, true);
+		let voxel = pipeline("vs_voxel", "fs_hard", false, None, true);
 		let camera = d.create_buffer(&wgpu::BufferDescriptor {
 			label: Some("splat camera"),
 			size: std::mem::size_of::<Uniform>() as u64,
@@ -550,17 +741,28 @@ impl Splatter {
 		});
 		let group = d.create_bind_group(&wgpu::BindGroupDescriptor {
 			label: Some("splat camera"),
-			layout: &pipeline.get_bind_group_layout(0),
+			layout: &bind,
 			entries: &[wgpu::BindGroupEntry { binding: 0, resource: camera.as_entire_binding() }],
 		});
 		if let Some(e) = pollster::block_on(scope.pop()) {
 			bail!("splats couldn't be set up: {e}");
 		}
-		Ok(Splatter { pipeline, group, camera, splats: None, target: None, name: g.name.clone(), ms: 0.0 })
+		Ok(Splatter {
+			soft,
+			glow,
+			pixel,
+			voxel,
+			group,
+			camera,
+			splats: None,
+			target: None,
+			name: g.name.clone(),
+			ms: 0.0,
+		})
 	}
 
-	/// Draw `splats` (sorted far to near) as `cam` sees them, over black, into `out`.
-	pub fn draw(&mut self, splats: &[Splat], cam: &Camera, out: &mut Frame) -> Result<()> {
+	/// Draw `splats` (soft ones sorted far to near) as `cam` sees them, as `style` says, into `out`.
+	pub fn draw(&mut self, splats: &[Splat], cam: &Camera, style: &Style, out: &mut Frame) -> Result<()> {
 		let t0 = Instant::now();
 		let g = gpu()?;
 		let d = &g.device;
@@ -570,7 +772,7 @@ impl Splatter {
 		}
 		let valid = d.push_error_scope(wgpu::ErrorFilter::Validation);
 		let memory = d.push_error_scope(wgpu::ErrorFilter::OutOfMemory);
-		let drawn = self.draw_in(g, splats, cam, out);
+		let drawn = self.draw_in(g, splats, cam, style, out);
 		// the scopes go in the order they came
 		let memory = pollster::block_on(memory.pop());
 		let valid = pollster::block_on(valid.pop());
@@ -582,7 +784,7 @@ impl Splatter {
 		Ok(())
 	}
 
-	fn draw_in(&mut self, g: &Gpu, splats: &[Splat], cam: &Camera, out: &mut Frame) -> Result<()> {
+	fn draw_in(&mut self, g: &Gpu, splats: &[Splat], cam: &Camera, style: &Style, out: &mut Frame) -> Result<()> {
 		let (d, q) = (&g.device, &g.queue);
 		let (w, h) = (cam.w, cam.h);
 		if self.target.as_ref().is_none_or(|t| t.w != w || t.h != h) {
@@ -603,7 +805,14 @@ impl Splatter {
 		if !splats.is_empty() {
 			q.write_buffer(buf, 0, bytemuck::cast_slice(splats));
 		}
-		q.write_buffer(&self.camera, 0, bytemuck::bytes_of(&cam.uniform()));
+		q.write_buffer(&self.camera, 0, bytemuck::bytes_of(&cam.uniform(style.shape)));
+		let (pipeline, corners) = match style.shape {
+			Shape::Soft => (&self.soft, 4),
+			Shape::Glow => (&self.glow, 4),
+			Shape::Pixel => (&self.pixel, 4),
+			Shape::Voxel => (&self.voxel, 36),
+		};
+		let [r, gr, b] = style.back;
 		let mut enc = d.create_command_encoder(&Default::default());
 		{
 			let mut pass = enc.begin_render_pass(&wgpu::RenderPassDescriptor {
@@ -613,16 +822,21 @@ impl Splatter {
 					depth_slice: None,
 					resolve_target: None,
 					ops: wgpu::Operations {
-						load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+						load: wgpu::LoadOp::Clear(wgpu::Color { r, g: gr, b, a: 1.0 }),
 						store: wgpu::StoreOp::Store,
 					},
 				})],
+				depth_stencil_attachment: style.shape.hard().then_some(wgpu::RenderPassDepthStencilAttachment {
+					view: &t.depth,
+					depth_ops: Some(wgpu::Operations { load: wgpu::LoadOp::Clear(1.0), store: wgpu::StoreOp::Discard }),
+					stencil_ops: None,
+				}),
 				..Default::default()
 			});
-			pass.set_pipeline(&self.pipeline);
+			pass.set_pipeline(pipeline);
 			pass.set_bind_group(0, &self.group, &[]);
 			pass.set_vertex_buffer(0, buf.slice(..));
-			pass.draw(0..4, 0..splats.len() as u32);
+			pass.draw(0..corners, 0..splats.len() as u32);
 		}
 		enc.copy_texture_to_buffer(
 			wgpu::TexelCopyTextureInfo {
@@ -681,8 +895,17 @@ mod tests {
 		f
 	}
 
-	fn look(mode: &str) -> Look {
-		Look { splat: mode.into(), splat_amount: 0.8, splat_orbit: 0.0, ..Look::default() }
+	fn look(mode: &str, shape: &str, size: f32) -> Look {
+		Look {
+			splat: mode.into(),
+			splat_shape: shape.into(),
+			splat_size: size,
+			splat_amount: 0.8,
+			splat_orbit: 0.0,
+			splat_relief: "depth".into(),
+			splat_depth: 1.0,
+			..Look::default()
+		}
 	}
 
 	#[test]
@@ -697,10 +920,10 @@ mod tests {
 	#[test]
 	fn a_flat_cloud_lands_on_its_squares_in_their_colours() {
 		let f = picture(192, 108);
-		let g = build(&f, None, 12.0, 0.5);
+		let g = build(&f, None, &Look { splat_amount: 0.5, ..look("plain", "soft", 12.0) });
 		assert_eq!((g.cols, g.rows), grid(192, 108, 12.0));
 		assert_eq!(g.splats.len(), g.cols * g.rows);
-		let cam = Camera::orbit(&look("paint"), 0.0, 192, 108);
+		let cam = Camera::orbit(&look("plain", "soft", 12.0), 0.0, 192, 108);
 		let (k, gx) = (FOCAL * 54.0, 192.0 / g.cols as f32);
 		for (i, s) in g.splats.iter().enumerate() {
 			assert_eq!(s.pos[2], FLAT);
@@ -718,12 +941,33 @@ mod tests {
 	}
 
 	#[test]
+	fn hard_shapes_sit_square_on_the_grid_and_brightness_can_place_them() {
+		let f = picture(192, 108);
+		let l = Look { splat_relief: "light".into(), ..look("plain", "voxel", 12.0) };
+		let g = build(&f, None, &l);
+		let (k, gx) = (FOCAL * 54.0, 192.0 / g.cols as f32);
+		for (i, s) in g.splats.iter().enumerate() {
+			assert_eq!((s.angle, s.scale[0]), (0.0, s.scale[1]));
+			let x = 96.0 + k * s.pos[0] / s.pos[2];
+			assert!((x - ((i % g.cols) as f32 + 0.5) * gx).abs() < 1e-3);
+		}
+		// the left is brighter, so nearer; dark would turn that round
+		let (left, right) = (g.splats[0].pos[2], g.splats[g.cols - 1].pos[2]);
+		assert!(left < right, "{left} {right}");
+		let dark = build(&f, None, &Look { splat_relief: "dark".into(), ..l.clone() });
+		assert!(dark.splats[0].pos[2] > dark.splats[dark.cols - 1].pos[2]);
+		// and none of it without depth
+		let flat = build(&f, None, &Look { splat_depth: 0.0, ..l });
+		assert!(flat.splats.iter().all(|s| (s.pos[2] - FLAT).abs() < 1e-6));
+	}
+
+	#[test]
 	fn bends_are_steady_and_drawable() {
 		let f = picture(192, 108);
-		for mode in ["paint", "needles", "bits", "slip", "burst"] {
-			let l = look(mode);
+		for mode in ["plain", "wave", "bits", "slip", "burst"] {
+			let l = look(mode, "soft", 4.0);
 			let once = |t: f64| {
-				let mut g = build(&f, None, 4.0, 0.6);
+				let mut g = build(&f, None, &l);
 				bend(&mut g, &l, t, 0.1);
 				g.splats
 			};
@@ -734,13 +978,13 @@ mod tests {
 				assert!(numbers.into_iter().all(|v| v.is_finite()), "{mode}: {s:?}");
 				assert!(s.scale.iter().all(|&v| v > 0.0 && v <= BIGGEST) && s.colour.iter().all(|&v| v <= 1.0));
 			}
-			let plain = build(&f, None, 4.0, 0.6).splats;
+			let plain = build(&f, None, &l).splats;
 			let changed = a.iter().zip(&plain).filter(|(x, y)| x != y).count();
 			match mode {
-				"paint" => assert_eq!(changed, 0),
-				// bits and slip bend some of it, the rest everywhere
+				"plain" => assert_eq!(changed, 0),
+				// bits and slip bend some of it, the rest (nearly) all
 				"bits" | "slip" => assert!(changed > 0 && changed < a.len(), "{mode} changed {changed}"),
-				_ => assert_eq!(changed, a.len(), "{mode}"),
+				_ => assert!(changed > a.len() * 9 / 10, "{mode} changed {changed}"),
 			}
 		}
 	}
@@ -753,7 +997,7 @@ mod tests {
 		for (i, v) in s.iter_mut().enumerate() {
 			v.colour[3] = i as f32;
 		}
-		let cam = Camera::orbit(&look("paint"), 0.0, 10, 10);
+		let cam = Camera::orbit(&look("plain", "soft", 6.0), 0.0, 10, 10);
 		let order: Vec<f32> = sort(&s, &cam).iter().map(|v| v.colour[3]).collect();
 		assert_eq!(order, vec![3.0, 0.0, 2.0, 4.0, 1.0]);
 	}
@@ -762,10 +1006,10 @@ mod tests {
 	fn smear_keeps_some_and_lets_go_on_a_jump() {
 		let f = picture(96, 54);
 		let mut c = Cloud::default();
-		let l = Look { splat: "smear".into(), splat_size: 12.0, ..Look::default() };
+		let l = Look { splat_amount: 0.5, ..look("smear", "soft", 12.0) };
 		let (cols, rows) = grid(96, 54, 12.0);
-		c.held = build(&f, None, 12.0, 0.6);
-		let other = build(&Frame::new(96, 54), None, 12.0, 0.6);
+		c.held = build(&f, None, &l);
+		let other = build(&Frame::new(96, 54), None, &l);
 		c.smear(&other, l.splat_amount, 0.5, 1.0 / 30.0);
 		let made_again = c.held.splats.iter().filter(|s| s.colour[0] == 0.0).count();
 		assert!(made_again > 0 && made_again < cols * rows / 4, "{made_again}");
@@ -773,10 +1017,10 @@ mod tests {
 		assert!(c.held.splats.is_empty());
 	}
 
-	/// Drawn by the GPU, splats left alone make the picture again, near enough. Skipped where there's
-	/// no GPU to draw with.
+	/// Drawn by the GPU: each shape left alone makes the picture again, near enough (pixels with their
+	/// gaps showing what's behind, glow brighter). Skipped where there's no GPU to draw with.
 	#[test]
-	fn paint_draws_the_picture_again() {
+	fn every_shape_draws_the_picture_again() {
 		let mut gpu = match Splatter::new() {
 			Ok(s) => s,
 			Err(e) => {
@@ -785,18 +1029,36 @@ mod tests {
 			}
 		};
 		let f = picture(320, 180);
-		let mut out = f.clone();
-		let l = Look { splat_size: 4.0, ..look("paint") };
-		Cloud::default().draw(&mut gpu, &mut out, None, &l, 0.0, 1.0 / 30.0, 9.0, true).unwrap();
 		let n = f.rgba.len() as f64;
-		let off: f64 = f.rgba.iter().zip(&out.rgba).map(|(a, b)| a.abs_diff(*b) as f64).sum::<f64>() / n;
 		let bright = |v: &[u8]| v.iter().map(|&x| x as f64).sum::<f64>() / n;
-		assert!(off < 8.0, "splats are {off:.1} levels off the picture on average");
-		assert!((bright(&out.rgba) / bright(&f.rgba) - 1.0).abs() < 0.03, "splats change how bright it is");
-		assert!(out.rgba.chunks_exact(4).all(|p| p[3] == 255));
+		let draw = |gpu: &mut Splatter, l: &Look| {
+			let mut out = f.clone();
+			Cloud::default().draw(gpu, &mut out, None, l, 0.0, 1.0 / 30.0, 9.0, true).unwrap();
+			assert!(out.rgba.chunks_exact(4).all(|p| p[3] == 255));
+			let off = f.rgba.iter().zip(&out.rgba).map(|(a, b)| a.abs_diff(*b) as f64).sum::<f64>() / n;
+			(out, off)
+		};
+		let (soft, off) = draw(&mut gpu, &look("plain", "soft", 4.0));
+		assert!(off < 8.0, "soft splats are {off:.1} levels off the picture on average");
+		assert!((bright(&soft.rgba) / bright(&f.rgba) - 1.0).abs() < 0.03, "soft splats change how bright it is");
+		// voxels: blocks of the picture, a little darker for their outlines
+		let (voxels, off) = draw(&mut gpu, &look("plain", "voxel", 48.0));
+		assert!(off < 20.0, "voxels are {off:.1} levels off the picture on average");
+		assert!(bright(&voxels.rgba) > bright(&f.rgba) * 0.75, "voxels are too dark");
+		// glow: the bright red on the left brighter, the dark red on the right darker
+		let (glow, _) = draw(&mut gpu, &look("plain", "glow", 8.0));
+		let red = |v: &[u8], left: bool| {
+			let row = |y: usize| (if left { 20..140 } else { 180..300 }).map(move |x| v[(y * 320 + x) * 4] as f64);
+			(40..140).flat_map(row).sum::<f64>() / (100.0 * 120.0)
+		};
+		assert!(red(&glow.rgba, true) > red(&f.rgba, true) + 20.0, "glow doesn't burn the highlights");
+		assert!(red(&glow.rgba, false) < red(&f.rgba, false) - 10.0, "glow doesn't sink the shadows");
+		let back = Look { splat_back: "#ff00ff".into(), ..look("plain", "pixel", 60.0) };
+		let (pixels, _) = draw(&mut gpu, &back);
+		let gaps = pixels.rgba.chunks_exact(4).filter(|p| p[..3] == [255, 0, 255]).count();
+		assert!(gaps > 320 * 180 / 10, "only {gaps} pixels show the gaps between pixels");
 		// a bent cloud is something else
-		let mut bent = f.clone();
-		Cloud::default().draw(&mut gpu, &mut bent, None, &look("needles"), 0.0, 1.0 / 30.0, 9.0, true).unwrap();
-		assert_ne!(bent.rgba, out.rgba);
+		let (bent, _) = draw(&mut gpu, &look("wave", "voxel", 48.0));
+		assert_ne!(bent.rgba, voxels.rgba);
 	}
 }

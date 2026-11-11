@@ -27,7 +27,7 @@ pub fn active(l: &Look) -> bool {
 
 /// Whether the look needs depth worked out: for what depth does itself, or to place splats.
 pub fn wanted(l: &Look) -> bool {
-	active(l) || crate::splat::active(l)
+	active(l) || crate::splat::wants_depth(l)
 }
 
 pub struct Depther {

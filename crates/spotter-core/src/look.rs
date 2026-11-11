@@ -211,14 +211,20 @@ pub struct Look {
 	pub depth_color: String,
 	pub depth_lines: f32,
 	pub depth_speed: f32,
-	/// gaussian splats (splat.rs): what's done to them (off, paint, needles, bits, slip, burst,
-	/// smear), how far apart they are (pixels of a 1080 picture), how much, how far the camera swings
-	/// round them, and the seconds a swing takes (and, without music, the time between bursts)
+	/// splats (splat.rs): what's done to them (off, plain, wave, bits, slip, burst, smear), what
+	/// they're drawn as (soft, glow, pixel, voxel), how far apart (pixels of a 1080 picture), how much,
+	/// how far the camera swings round them and the seconds a swing takes (and, without music, the
+	/// time between beats); what places them in depth (depth, light, dark, flat), how deep, and the
+	/// colour behind them
 	pub splat: String,
+	pub splat_shape: String,
 	pub splat_size: f32,
 	pub splat_amount: f32,
 	pub splat_orbit: f32,
 	pub splat_speed: f32,
+	pub splat_relief: String,
+	pub splat_depth: f32,
+	pub splat_back: String,
 	/// look ahead: work out what's in the whole clip before drawing any of it (tape.rs), and how long
 	/// its boxes are smoothed over, both ways in time
 	pub ahead: bool,
